@@ -12,13 +12,14 @@ C# 프로젝트를 Libarary Class(Frarmwork)로 새로 생성합니다. (이름 
 빌드탭으로 들어가 출력 경로를 설정합니다.
 %파일경로%\Photon-OnPremise-Server-SDK_v4-0-29-11263\deploy\TheLordServer\bin
 
-코드 소스를 넣고 참고를 추가합니다.
+코드 소스를 넣고 참고를 추가합니다. or Plugins
 Photon-OnPremise-Server-SDK_v4-0-29-11263\lib\ExitGames.Logging.Log4Net.dll
 Photon-OnPremise-Server-SDK_v4-0-29-11263\lib\log4net.dll
 Photon-OnPremise-Server-SDK_v4-0-29-11263\lib\PhotonHostRuntimeInterfaces.dll
 Photon-OnPremise-Server-SDK_v4-0-29-11263\lib\Photon.SocketServer.dll
 Photon-OnPremise-Server-SDK_v4-0-29-11263\lib\ExitGamesLibs.dll
-
+protobuf-net.dll
+ProtoBuf2Data.dll
 
 Th
 
