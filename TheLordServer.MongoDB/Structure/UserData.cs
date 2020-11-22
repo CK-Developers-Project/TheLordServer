@@ -7,20 +7,27 @@ namespace TheLordServer.MongoDB.Structure
     public abstract class BaseData
     {
         [BsonId]
-        public Object Id { get; set; }
+        public ObjectId Id { get; set; }
 
         public BaseData ( )
         {
             Id = ObjectId.GenerateNewId ( );
         }
+
+        public short PID { get => Id.Pid; }
     }
 
     public class UserData : BaseData
     {
         public class UserInfo
         {
-            public string nickname = "";
-            public int race = 0;
+            public string Nickname { get; set; }
+            public int Race { get; set; }
+            public UserInfo ( )
+            {
+                Nickname = "";
+                Race = 0;
+            }
         }
 
         public string Username { get; set; }

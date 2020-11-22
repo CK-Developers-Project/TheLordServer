@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using MongoDB.Driver;
 using MongoDB.Bson;
+using System;
 
 namespace TheLordServer.MongoDB.Model
 {
@@ -19,15 +20,43 @@ namespace TheLordServer.MongoDB.Model
 
         public void Remove ( string username )
         {
-            var filter = Builders<UserData>.Filter.Eq ( "Username", username );
-            collection.DeleteOneAsync ( filter );
+            try
+            {
+                var filter = Builders<UserData>.Filter.Eq ( "Username", username );
+                collection.DeleteOneAsync ( filter );
+            }
+            catch(MongoException e)
+            {
+                MongoHelper.Log.ErrorFormat ( "[{0}.Remove] Error - {1}", typeof ( UserCollection ).Name, e.Message );
+            }
         }
 
-        public void UpdatePassword ( string username, string password )
+        public void UpdateInfo ( UserData data )
         {
-            var filter = Builders<UserData>.Filter.Eq ( "Username", username );
-            var update = Builders<UserData>.Update.Set ( "Password", password );
-            collection.UpdateOneAsync ( filter, update );
+            try
+            {
+                var filter = Builders<UserData>.Filter.Eq ( "_id", data.Id );
+                var update = Builders<UserData>.Update.Set ( (x)=> x.Info, data.Info );
+                collection.UpdateOneAsync ( filter, update );
+            }
+            catch ( MongoException e )
+            {
+                MongoHelper.Log.ErrorFormat ( "[{0}.UpdateInfo] Error - {1}", typeof ( UserCollection ).Name, e.Message );
+            }
+        }
+
+        public void UpdatePassword ( UserData data )
+        {
+            try
+            {
+                var filter = Builders<UserData>.Filter.Eq ( "_id", data.Id );
+                var update = Builders<UserData>.Update.Set ( "Password", data.Password );
+                collection.UpdateOneAsync ( filter, update );
+            }
+            catch ( MongoException e )
+            {
+                MongoHelper.Log.ErrorFormat ( "[{0}.UpdatePassword] Error - {1}", typeof ( UserCollection ).Name, e.Message );
+            }
         }
 
         public UserData GetByUsername ( string username )
@@ -43,10 +72,19 @@ namespace TheLordServer.MongoDB.Model
 
         public bool VerifyUser ( string username, string password )
         {
-            var builder = Builders<UserData>.Filter;
-            var filter = builder.Eq ( "Username", username ) & builder.Eq ( "Password", password );
-            var data = collection.Find ( filter ).ToListAsync ( ).Result;
-            return data.Count > 0 ? true : false;
+            try
+            {
+                var builder = Builders<UserData>.Filter;
+                var filter = builder.Eq ( "Username", username ) & builder.Eq ( "Password", password );
+                var data = collection.Find ( filter ).ToListAsync ( ).Result;
+                return data.Count > 0 ? true : false;
+            }
+            catch ( MongoException e )
+            {
+                MongoHelper.Log.ErrorFormat ( "[{0}.VerifyUser] Error - {1}", typeof ( UserCollection ).Name, e.Message );
+                return false;
+            }
+            
         }
     }
 }

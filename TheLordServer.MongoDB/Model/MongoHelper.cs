@@ -1,9 +1,9 @@
 ﻿using System;
 using MongoDB.Driver;
+using ExitGames.Logging;
 
 namespace TheLordServer.MongoDB.Model
 {
-    using Structure;
     public class MongoHelper
     {
         public static IMongoClient client { get; set; }
@@ -15,8 +15,11 @@ namespace TheLordServer.MongoDB.Model
 
         public static UserCollection UserCollection;
 
-        public static void ConnectToMongoService( ExitGames.Logging.ILogger log ) 
+        public static ILogger Log { get; set; }
+
+        public static void ConnectToMongoService( ILogger log ) 
         {
+            Log = log;
             try
             {
                 string connectionMessage = string.Format(MongoConnection, UserName, Password);
@@ -28,7 +31,7 @@ namespace TheLordServer.MongoDB.Model
             }
             catch(Exception e)
             {
-                log.Info ( "MongoDB Login Fail : " + e.Message );
+                Log.Info ( "MongoDB Login Fail : " + e.Message );
             }
         }
     }

@@ -7,7 +7,8 @@ namespace TheLordServer.MongoDB.Structure
     {
         Elf = 1,
         Human,
-        Undead
+        Undead,
+        End
     }
 
 }

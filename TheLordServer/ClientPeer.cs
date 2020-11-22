@@ -2,6 +2,7 @@
 using PhotonHostRuntimeInterfaces;
 using System;
 using System.Collections.Generic;
+using MongoDB.Bson;
 
 namespace TheLordServer
 {
@@ -10,8 +11,7 @@ namespace TheLordServer
 
     public class ClientPeer : Photon.SocketServer.ClientPeer
     {
-        public string username;
-        public float x, y, z;
+        public ObjectId Id { get; set; }
 
         public ClientPeer(InitRequest initRequest) : base(initRequest) { }
 
