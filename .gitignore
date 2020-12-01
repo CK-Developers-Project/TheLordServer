@@ -37,3 +37,8 @@ packages.config
 # Crashlytics generated file
 crashlytics-build.properties
 DesignTimeResolveAssemblyReferencesInput.cache
+TheLordServer/packages.config
+TheLordServer.Table/Properties/AssemblyInfo.cs
+TheLordServer.MongoDB/Properties/AssemblyInfo.cs
+ProtoBuf2Data/Properties/AssemblyInfo.cs
+TheLordServer/Properties/AssemblyInfo.cs
