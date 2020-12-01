@@ -42,3 +42,8 @@ TheLordServer.Table/Properties/AssemblyInfo.cs
 TheLordServer.MongoDB/Properties/AssemblyInfo.cs
 ProtoBuf2Data/Properties/AssemblyInfo.cs
 TheLordServer/Properties/AssemblyInfo.cs
+ProtoBuf2Data/Properties/AssemblyInfo.cs
+TheLordServer.MongoDB/Properties/AssemblyInfo.cs
+TheLordServer.Table/Properties/AssemblyInfo.cs
+TheLordServer/packages.config
+TheLordServer/Properties/AssemblyInfo.cs
