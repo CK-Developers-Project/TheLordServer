@@ -32,8 +32,8 @@ ExportedObj/
 *.opendb
 *.VC.db
 *.sln
+packages.config
 
 # Crashlytics generated file
 crashlytics-build.properties
 DesignTimeResolveAssemblyReferencesInput.cache
-packages.config
