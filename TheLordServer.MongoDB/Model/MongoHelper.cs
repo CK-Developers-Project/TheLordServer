@@ -29,7 +29,7 @@ namespace TheLordServer.MongoDB.Model
                 UserCollection = new UserCollection ( database, "UserData" );
 
             }
-            catch(Exception e)
+            catch(MongoException e)
             {
                 Log.Info ( "MongoDB Login Fail : " + e.Message );
             }
