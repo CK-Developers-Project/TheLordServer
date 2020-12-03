@@ -8,8 +8,13 @@
 
     public enum OperationCode : byte
     {
-        Login,          // 로그인
+        // LoginHandler
+        Login,              // 로그인
         UserResistration,   // 유저 닉네임 및 종족 선택
+
+        // UserAssetHandler
+        RequestResource,    // 리소스 갱신 요청
+
     }
 
     public enum EventCode : byte

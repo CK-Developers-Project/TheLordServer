@@ -1,7 +1,5 @@
 ﻿using Photon.SocketServer;
 using System;
-using System.Collections.Generic;
-using ExitGames.Logging;
 
 namespace TheLordServer.Handler
 {
@@ -23,9 +21,6 @@ namespace TheLordServer.Handler
             UserCreateFail,     // 유저생성 실패
             UserInfoCreate,     // 유저정보 생성
         }
-
-        public static readonly ILogger Log = LogManager.GetCurrentClassLogger ( );
-
 
         public void AddListener ( )
         {
