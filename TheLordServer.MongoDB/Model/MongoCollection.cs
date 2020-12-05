@@ -16,12 +16,13 @@ namespace TheLordServer.MongoDB.Model
             collection = database.GetCollection<T> ( name );
         }
 
-        public T Get (ObjectId id)
+        public async Task<T> Get (ObjectId id)
         {
             try
             {
-                var data = collection.Find ( Builders<T>.Filter.Eq ( "_id", id ) ).ToList ( );
-                return data.Count > 0 ? data[0] : default ( T );
+                var data = await collection.FindAsync(Builders<T>.Filter.Eq("_id", id));
+                var datas = data.ToList();
+                return datas.Count > 0 ? datas[0] : default ( T );
             }
             catch ( Exception )
             {

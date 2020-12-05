@@ -1,13 +1,10 @@
 ﻿using Photon.SocketServer;
 using PhotonHostRuntimeInterfaces;
-using System;
-using System.Collections.Generic;
 using MongoDB.Bson;
 
 namespace TheLordServer
 {
-    using ExitGames.Logging;
-    using Structure;
+    using Table.Structure;
 
     public class ClientPeer : Photon.SocketServer.ClientPeer
     {

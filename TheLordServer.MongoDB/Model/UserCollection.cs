@@ -62,18 +62,17 @@ namespace TheLordServer.MongoDB.Model
 
         public async Task<List<UserData>> GetAllUsers ( )
         {
-            var data = collection.Find ( Builders<UserData>.Filter.Empty );
-            var a = await data.ToListAsync ( );
-            return null;
+            var data = await collection.Find ( Builders<UserData>.Filter.Empty ).ToListAsync();
+            return data;
         }
 
-        public bool VerifyUser ( string username, string password )
+        public async Task<bool> VerifyUser ( string username, string password )
         {
             try
             {
                 var builder = Builders<UserData>.Filter;
                 var filter = builder.Eq ( "Username", username ) & builder.Eq ( "Password", password );
-                var data = collection.Find ( filter ).ToListAsync ( ).Result;
+                var data = await collection.Find ( filter ).ToListAsync ( );
                 return data.Count > 0 ? true : false;
             }
             catch ( MongoException e )
