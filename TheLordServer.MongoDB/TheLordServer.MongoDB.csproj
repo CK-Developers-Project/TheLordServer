@@ -77,13 +77,21 @@
   <ItemGroup>
     <Compile Include="Model\MongoCollection.cs" />
     <Compile Include="Model\MongoHelper.cs" />
+    <Compile Include="Model\UserAssetCollection.cs" />
     <Compile Include="Model\UserCollection.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Structure\ActorStructure.cs" />
-    <Compile Include="Structure\UserData.cs" />
+    <Compile Include="CollectionData\BaseData.cs" />
+    <Compile Include="CollectionData\UserAssetData.cs" />
+    <Compile Include="CollectionData\UserData.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\TheLordServer.Table\TheLordServer.Table.csproj">
+      <Project>{ac41cffc-2ba7-4484-a2af-05b76e498061}</Project>
+      <Name>TheLordServer.Table</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

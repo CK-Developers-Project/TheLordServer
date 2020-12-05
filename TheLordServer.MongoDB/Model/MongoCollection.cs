@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using MongoDB.Bson;
 using MongoDB.Driver;
 
@@ -26,6 +27,11 @@ namespace TheLordServer.MongoDB.Model
             {
                 return default ( T );
             }
+        }
+
+        public async Task Add(T data)
+        {
+            await collection.InsertOneAsync ( data );
         }
     }
 }

@@ -1,5 +1,5 @@
 ﻿
-namespace TheLordServer.MongoDB.Structure
+namespace TheLordServer.Table.Structure
 {
 
 

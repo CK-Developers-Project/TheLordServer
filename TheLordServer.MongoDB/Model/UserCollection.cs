@@ -1,11 +1,10 @@
 ﻿using System.Collections.Generic;
 using MongoDB.Driver;
-using MongoDB.Bson;
-using System;
 
 namespace TheLordServer.MongoDB.Model
 {
-    using Structure;
+    using System.Threading.Tasks;
+    using CollectionData;
 
     public class UserCollection : MongoCollection<UserData>
     {
@@ -13,17 +12,12 @@ namespace TheLordServer.MongoDB.Model
         {
         }
 
-        public void Add ( UserData data )
-        {
-            collection.InsertOneAsync ( data );
-        }
-
-        public void Remove ( string username )
+        public async Task Remove ( string username )
         {
             try
             {
                 var filter = Builders<UserData>.Filter.Eq ( "Username", username );
-                collection.DeleteOneAsync ( filter );
+                await collection.DeleteOneAsync ( filter );
             }
             catch(MongoException e)
             {
@@ -31,13 +25,13 @@ namespace TheLordServer.MongoDB.Model
             }
         }
 
-        public void UpdateInfo ( UserData data )
+        public async Task UpdateInfo ( UserData data )
         {
             try
             {
                 var filter = Builders<UserData>.Filter.Eq ( "_id", data.Id );
                 var update = Builders<UserData>.Update.Set ( (x)=> x.Info, data.Info );
-                collection.UpdateOneAsync ( filter, update );
+                await collection.UpdateOneAsync ( filter, update );
             }
             catch ( MongoException e )
             {
@@ -45,13 +39,13 @@ namespace TheLordServer.MongoDB.Model
             }
         }
 
-        public void UpdatePassword ( UserData data )
+        public async Task UpdatePassword ( UserData data )
         {
             try
             {
                 var filter = Builders<UserData>.Filter.Eq ( "_id", data.Id );
                 var update = Builders<UserData>.Update.Set ( "Password", data.Password );
-                collection.UpdateOneAsync ( filter, update );
+                await collection.UpdateOneAsync ( filter, update );
             }
             catch ( MongoException e )
             {
@@ -59,15 +53,18 @@ namespace TheLordServer.MongoDB.Model
             }
         }
 
-        public UserData GetByUsername ( string username )
+        public async Task<UserData> GetByUsername ( string username )
         {
-            var data = collection.Find ( Builders<UserData>.Filter.Eq ( "Username", username ) ).ToList();
-            return data.Count > 0 ? data[0] : null;
+            var data = await collection.FindAsync ( Builders<UserData>.Filter.Eq ( "Username", username ) );
+            var datas = data.ToList ( );
+            return datas.Count > 0 ? datas[0] : null;
         }
 
-        public List<UserData> GetAllUsers ( )
+        public async Task<List<UserData>> GetAllUsers ( )
         {
-            return collection.Find ( Builders<UserData>.Filter.Empty ).ToListAsync ( ).Result;
+            var data = collection.Find ( Builders<UserData>.Filter.Empty );
+            var a = await data.ToListAsync ( );
+            return null;
         }
 
         public bool VerifyUser ( string username, string password )

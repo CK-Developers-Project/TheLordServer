@@ -5,7 +5,7 @@ using ExitGames.Logging;
 
 namespace TheLordServer
 {
-    using Structure;
+    using Table.Structure;
 
     public class HandlerMedia
     {

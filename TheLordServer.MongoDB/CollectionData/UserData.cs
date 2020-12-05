@@ -1,22 +1,7 @@
 ﻿using System;
-using MongoDB.Bson;
-using MongoDB.Bson.Serialization.Attributes;
 
-namespace TheLordServer.MongoDB.Structure
+namespace TheLordServer.MongoDB.CollectionData
 {
-    public abstract class BaseData
-    {
-        [BsonId]
-        public ObjectId Id { get; set; }
-
-        public BaseData ( )
-        {
-            Id = ObjectId.GenerateNewId ( );
-        }
-
-        public short PID { get => Id.Pid; }
-    }
-
     public class UserData : BaseData
     {
         public class UserInfo
@@ -44,6 +29,4 @@ namespace TheLordServer.MongoDB.Structure
             Info = new UserInfo ( );
         }
     }
-
-
 }

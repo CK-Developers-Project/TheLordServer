@@ -14,6 +14,7 @@ namespace TheLordServer.MongoDB.Model
         public static string MongoDatabase = "tsetDB";
 
         public static UserCollection UserCollection;
+        public static UserAssetCollection UserAssetCollection;
 
         public static ILogger Log { get; set; }
 
@@ -27,6 +28,7 @@ namespace TheLordServer.MongoDB.Model
                 database = client.GetDatabase(MongoDatabase);
 
                 UserCollection = new UserCollection ( database, "UserData" );
+                UserAssetCollection = new UserAssetCollection ( database, "UserAssetData" );
 
             }
             catch(MongoException e)

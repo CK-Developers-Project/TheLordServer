@@ -4,7 +4,7 @@ using Photon.SocketServer;
 namespace TheLordServer.Handler
 {
     using Util;
-    using Structure;
+    using Table.Structure;
 
     public class UserAssetHandler : Singleton<UserAssetHandler>, IBaseHandler
     {
@@ -22,7 +22,7 @@ namespace TheLordServer.Handler
         void OnRequestResourceReceived(ClientPeer peer, OperationRequest operationRequest, SendParameters sendParameters)
         {
             OperationResponse response = new OperationResponse(operationRequest.OperationCode);
-
+            
             peer.SendOperationResponse ( response, sendParameters );
         }
     }

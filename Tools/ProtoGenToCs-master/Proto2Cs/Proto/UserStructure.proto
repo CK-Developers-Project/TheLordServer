@@ -6,3 +6,8 @@ message UserData {
 	optional string nickname = 3;
 	optional int32 race = 4;
 }
+
+message Resource {
+	optional string gold = 1;
+	optional string cash = 2;
+}

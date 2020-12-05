@@ -3,9 +3,9 @@ using System;
 
 namespace TheLordServer.Handler
 {
-    using MongoDB.Structure;
+    using MongoDB.CollectionData;
     using MongoDB.Model;
-    using Structure;
+    using Table.Structure;
     using Util;
 
     public class LoginHandler : Singleton<LoginHandler>, IBaseHandler

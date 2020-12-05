@@ -1,4 +1,4 @@
-﻿namespace TheLordServer.Structure
+﻿namespace TheLordServer.Table.Structure
 {
     public enum ReturnCode
     {
@@ -19,6 +19,7 @@
 
     public enum EventCode : byte
     {
-
+        // UserAssetHandler
+        UpdateResource,     // 리소스 갱신
     }
 }

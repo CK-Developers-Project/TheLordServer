@@ -90,12 +90,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ClientPeer.cs" />
+    <Compile Include="Event\UserAssetEvent.cs" />
     <Compile Include="HandlerMedia.cs" />
     <Compile Include="Handler\IBaseHandler.cs" />
     <Compile Include="Handler\LoginHandler.cs" />
     <Compile Include="Handler\UserAssetHandler.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Structure\NetStructure.cs" />
     <Compile Include="TheLordServer.cs" />
     <Compile Include="Util\BinSerializer.cs" />
     <Compile Include="Util\DictionaryTool.cs" />
