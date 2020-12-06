@@ -1,8 +1,6 @@
-﻿using System.Collections.Generic;
-using MongoDB.Driver;
+﻿using MongoDB.Driver;
 using System.Threading.Tasks;
 using MongoDB.Bson;
-using System;
 
 namespace TheLordServer.MongoDB.Model
 {
@@ -12,19 +10,6 @@ namespace TheLordServer.MongoDB.Model
     {
         public UserAssetCollection ( IMongoDatabase database, string name ) : base ( database, name )
         {
-        }
-
-        public async Task Remove( ObjectId id)
-        {
-            try
-            {
-                var filter = Builders<UserAssetData>.Filter.Eq ( "_id", id );
-                await collection.DeleteOneAsync ( filter );
-            }
-            catch(MongoException e)
-            {
-                MongoHelper.Log.ErrorFormat ( "[{0}.Remove] Error - {1}", typeof ( UserAssetCollection ).Name, e.Message );
-            }
         }
 
         public async Task UpdateGold( UserAssetData data )

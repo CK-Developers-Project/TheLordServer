@@ -17,8 +17,5 @@ namespace TheLordServer
         {
             BuildingTable = new BuildingTable( "Table\\BuildingTable.csv" );
         }
-
-
-
     }
 }

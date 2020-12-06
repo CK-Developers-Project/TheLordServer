@@ -7,6 +7,7 @@ using Photon.SocketServer;
 
 namespace TheLordServer
 {
+    using Table;
     using Table.Structure;
     using Handler;
     using MongoDB.Model;

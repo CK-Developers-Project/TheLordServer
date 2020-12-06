@@ -20,3 +20,10 @@ int32,int32,int32,int32,int32,int32
 1601,3,4,1012500,15187500,1
 1701,3,5,15187500,30000000,1
 
+//MainBuildingInfo
+index,basePoint,nextLV
+int32,int32,int32
+1,100,100
+101,100,100
+201,100,100
+

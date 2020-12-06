@@ -75,6 +75,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CollectionData\BuildingData.cs" />
+    <Compile Include="Model\BuildingCollection.cs" />
     <Compile Include="Model\MongoCollection.cs" />
     <Compile Include="Model\MongoHelper.cs" />
     <Compile Include="Model\UserAssetCollection.cs" />

@@ -12,19 +12,6 @@ namespace TheLordServer.MongoDB.Model
         {
         }
 
-        public async Task Remove ( string username )
-        {
-            try
-            {
-                var filter = Builders<UserData>.Filter.Eq ( "Username", username );
-                await collection.DeleteOneAsync ( filter );
-            }
-            catch(MongoException e)
-            {
-                MongoHelper.Log.ErrorFormat ( "[{0}.Remove] Error - {1}", typeof ( UserCollection ).Name, e.Message );
-            }
-        }
-
         public async Task UpdateInfo ( UserData data )
         {
             try

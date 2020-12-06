@@ -15,15 +15,22 @@ namespace ProtoData
   {
     public BuildingClickData() {}
     
+    private int _index;
+    [global::ProtoBuf.ProtoMember(1, IsRequired = true, Name=@"index", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
+    public int index
+    {
+      get { return _index; }
+      set { _index = value; }
+    }
     private int _clickAction;
-    [global::ProtoBuf.ProtoMember(1, IsRequired = true, Name=@"clickAction", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
+    [global::ProtoBuf.ProtoMember(2, IsRequired = true, Name=@"clickAction", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
     public int clickAction
     {
       get { return _clickAction; }
       set { _clickAction = value; }
     }
     private int _value = default(int);
-    [global::ProtoBuf.ProtoMember(2, IsRequired = false, Name=@"value", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
+    [global::ProtoBuf.ProtoMember(3, IsRequired = false, Name=@"value", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
     [global::System.ComponentModel.DefaultValue(default(int))]
     public int value
     {

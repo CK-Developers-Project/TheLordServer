@@ -1,6 +1,7 @@
 syntax = "proto2";
 
 message BuildingClickData {
-    required int32 clickAction = 1;
-    optional int32 value = 2;
+    required int32 index = 1;
+    required int32 clickAction = 2;
+    optional int32 value = 3;
 }

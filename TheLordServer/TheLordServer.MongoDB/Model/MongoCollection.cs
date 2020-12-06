@@ -34,5 +34,19 @@ namespace TheLordServer.MongoDB.Model
         {
             await collection.InsertOneAsync ( data );
         }
+
+        public async Task<T> Remove ( ObjectId id )
+        {
+            try
+            {
+                var filter = Builders<T>.Filter.Eq ( "_id", id );
+                await collection.DeleteOneAsync ( filter );
+            }
+            catch ( MongoException e )
+            {
+                MongoHelper.Log.ErrorFormat ( "[{0}.Remove] Error - {1}", typeof ( T ).Name, e.Message );
+            }
+            return default(T);
+        }
     }
 }

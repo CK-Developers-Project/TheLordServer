@@ -102,5 +102,20 @@ namespace TheLordServer.Table
             }
             return table;
         }
+        
+        public static Dictionary<string, object> Get(List<Dictionary<string, object>> sheet, string key, int index)
+        {
+            Dictionary<string, object> result = null;
+            foreach(var record in sheet)
+            {
+                int value = (int)record[key];
+                if ( value == index )
+                {
+                    result = record;
+                    break;
+                }
+            }
+            return result;
+        }
     }
 }

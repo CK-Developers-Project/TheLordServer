@@ -18,4 +18,6 @@ echo Convert Complete!
 
 xcopy ".\csv\*.*" "..\..\TheLordServer.Table\Table" /e /h /k /y
 
+xcopy ".\csv\*.*" "..\..\..\Photon-OnPremise-Server-SDK_v4-0-29-11263\deploy\TheLordServer\Table" /e /h /k /y
+
 pause
