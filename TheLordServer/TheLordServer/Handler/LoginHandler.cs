@@ -103,7 +103,7 @@ namespace TheLordServer.Handler
                             }
                             else
                             {
-                                response.ReturnCode = (short)ReturnCode.Success;
+                                response.ReturnCode = (short)NextAction.LoginSuccess;
                                 ProtoData.UserData packet = new ProtoData.UserData();
                                 packet.nickname = userData.Info.Nickname;
                                 packet.race = userData.Info.Race;

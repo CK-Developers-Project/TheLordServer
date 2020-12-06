@@ -15,6 +15,7 @@ namespace TheLordServer.MongoDB.Model
 
         public static UserCollection UserCollection;
         public static UserAssetCollection UserAssetCollection;
+        public static BuildingCollection BuildingCollection;
 
         public static ILogger Log { get; set; }
 
@@ -29,7 +30,7 @@ namespace TheLordServer.MongoDB.Model
 
                 UserCollection = new UserCollection ( database, "UserData" );
                 UserAssetCollection = new UserAssetCollection ( database, "UserAssetData" );
-
+                BuildingCollection = new BuildingCollection ( database, "BuildingData" );
             }
             catch(MongoException e)
             {

@@ -42,15 +42,31 @@ namespace TheLordServer.MongoDB.Model
 
         public async Task<UserData> GetByUsername ( string username )
         {
-            var data = await collection.FindAsync ( Builders<UserData>.Filter.Eq ( "Username", username ) );
-            var datas = data.ToList ( );
-            return datas.Count > 0 ? datas[0] : null;
+            try
+            {
+                var data = await collection.FindAsync ( Builders<UserData>.Filter.Eq ( "Username", username ) );
+                var datas = data.ToList ( );
+                return datas.Count > 0 ? datas[0] : null;
+            }
+            catch(MongoException e)
+            {
+                MongoHelper.Log.ErrorFormat ( "[{0}.GetByUsername] Error - {1}", typeof ( UserCollection ).Name, e.Message );
+                return null;
+            }
         }
 
         public async Task<List<UserData>> GetAllUsers ( )
         {
-            var data = await collection.Find ( Builders<UserData>.Filter.Empty ).ToListAsync();
-            return data;
+            try
+            {
+                var data = await collection.Find ( Builders<UserData>.Filter.Empty ).ToListAsync ( );
+                return data;
+            }
+            catch(MongoException e)
+            {
+                MongoHelper.Log.ErrorFormat ( "[{0}.GetAllUsers] Error - {1}", typeof ( UserCollection ).Name, e.Message );
+                return null;
+            }
         }
 
         public async Task<bool> VerifyUser ( string username, string password )
@@ -67,7 +83,6 @@ namespace TheLordServer.MongoDB.Model
                 MongoHelper.Log.ErrorFormat ( "[{0}.VerifyUser] Error - {1}", typeof ( UserCollection ).Name, e.Message );
                 return false;
             }
-            
         }
     }
 }

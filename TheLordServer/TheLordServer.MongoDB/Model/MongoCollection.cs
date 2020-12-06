@@ -24,8 +24,9 @@ namespace TheLordServer.MongoDB.Model
                 var datas = data.ToList();
                 return datas.Count > 0 ? datas[0] : default ( T );
             }
-            catch ( Exception )
+            catch ( MongoException e )
             {
+                MongoHelper.Log.ErrorFormat ( "[{0}.Get] Error - {1}", typeof ( T ).Name, e.Message );
                 return default ( T );
             }
         }
