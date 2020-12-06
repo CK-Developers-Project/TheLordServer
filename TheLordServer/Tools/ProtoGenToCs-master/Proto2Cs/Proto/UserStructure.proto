@@ -1,0 +1,13 @@
+syntax = "proto2";
+
+message UserData {
+	optional string id = 1;
+	optional string password = 2;
+	optional string nickname = 3;
+	optional int32 race = 4;
+}
+
+message ResourceData {
+	optional string gold = 1;
+	optional string cash = 2;
+}

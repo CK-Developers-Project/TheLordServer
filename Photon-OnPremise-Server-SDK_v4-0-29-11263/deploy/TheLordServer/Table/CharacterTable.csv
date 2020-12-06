@@ -1,0 +1,5 @@
+//CharacterInfo
+index,price,name,abilitys,damage,armor,life,speed,attackspeed,distance
+int,int,string,List<int>,int,int,int,int,int,int
+1,1,1,1,1,1,1,1,1,1
+

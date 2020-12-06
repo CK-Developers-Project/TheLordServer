@@ -1,0 +1,16 @@
+//AbilityInfo
+index,name,abilityType,cast,duration,range,distance,cooltime,amount
+int,string,int,int,int,int,int,int,int
+0,공격,0,0,0,0,0,0,0
+1,이동,0,0,0,0,0,0,0
+2,정지,0,0,0,0,0,0,0
+3,헤매기,2,0,0,300,0,0,0
+
+//Test123
+index,name,abilityType,cast,duration,range,distance,cooltime,amount
+int,string,int,int,int,int,int,int,int
+0,공격,0,0,0,0,0,0,0
+1,이동,0,0,0,0,0,0,0
+2,정지,0,0,0,0,0,0,0
+3,헤매기,2,0,0,300,0,0,0
+
