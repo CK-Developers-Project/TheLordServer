@@ -8,7 +8,7 @@ using System.Linq;
 
 namespace TheLordServer.Table
 {
-    public abstract class BaseTable
+    public class BaseTable
     {
         protected static string _splite_return = @",(?=(?:[^""]*""[^""]*"")*(?![^""]*""))";
         protected static string _line_splite_return = @"\r\n|\n\r|\n|\r";
@@ -98,7 +98,7 @@ namespace TheLordServer.Table
             }
             catch ( Exception e )
             {
-                Log.InfoFormat ( "[BaseTable] - {0}", e.Message );
+                Log.ErrorFormat ( "[BaseTable] - {0}", e.Message );
             }
             return table;
         }

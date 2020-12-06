@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.IO;
-using System.Text.RegularExpressions;
+﻿using System.Collections.Generic;
 
 namespace TheLordServer.Table
 {
@@ -17,7 +12,5 @@ namespace TheLordServer.Table
             BuildingInfoSheet = table["BuildingInfo"];
             MainBuildingInfoSheet = table["MainBuildingInfo"];
         }
-
-
     }
 }
