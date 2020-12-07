@@ -14,6 +14,11 @@ namespace TheLordServer.Table
         protected static string _line_splite_return = @"\r\n|\n\r|\n|\r";
         protected static char[] _trim_chars = { '\"' };
 
+        protected static string TYPE_INT32 = "int32";
+        protected static string TYPE_FLOAT = "float";
+        protected static string TYPE_STRING = "string";
+        protected static string TYPE_LIST = "List";
+
         protected static ILogger Log = LogManager.GetCurrentClassLogger ( );
 
         protected Dictionary<string, List<Dictionary<string, object>>> table;
@@ -23,7 +28,23 @@ namespace TheLordServer.Table
             table = Read ( file );
         }
 
-        protected Dictionary<string, List<Dictionary<string, object>>> Read (string file)
+        public static Dictionary<string, object> Get(List<Dictionary<string, object>> sheet, string key, int index)
+        {
+            Dictionary<string, object> result = null;
+            foreach (var record in sheet)
+            {
+                int value = (int)record[key];
+                if (value == index)
+                {
+                    result = record;
+                    break;
+                }
+            }
+            return result;
+        }
+
+
+        Dictionary<string, List<Dictionary<string, object>>> Read (string file)
         {
             Dictionary<string, List<Dictionary<string, object>>> table = new Dictionary<string, List<Dictionary<string, object>>> ( );
 
@@ -37,61 +58,52 @@ namespace TheLordServer.Table
                         string sheetName = "";
                         string[] header = null;
                         string[] types = null;
-                        for ( int i = 0; i < lines.Length; ++i )
+                        for (int i = 0; i < lines.Length; ++i)
                         {
-                            if ( lines[i].Length > 2 && lines[i].Substring ( 0, 2 ).Equals ( "//" ) )
+                            if (lines[i].Length > 2 && lines[i].Substring(0, 2).Equals("//"))
                             {
-                                sheetName = lines[i].Substring ( 2 );
-                                header = Regex.Split ( lines[i + 1], _splite_return );
-                                types = Regex.Split ( lines[i + 2], _splite_return );
+                                sheetName = lines[i].Substring(2);
+                                header = Regex.Split(lines[i + 1], _splite_return);
+                                types = Regex.Split(lines[i + 2], _splite_return);
                                 i += 2;
-                                table.Add ( sheetName, new List<Dictionary<string, object>> ( ) );
+                                table.Add(sheetName, new List<Dictionary<string, object>>());
                                 continue;
                             }
 
-                            var values = Regex.Split ( lines[i], _splite_return );
-                            if ( values.Length == 0 || values[0] == "" )
+                            var values = Regex.Split(lines[i], _splite_return);
+                            if (values.Length == 0 || values[0] == "")
                             {
                                 continue;
                             }
-                            
-                            var entry = new Dictionary<string, object> ( );
-                            for ( int j = 0; j < header.Length; ++j )
+
+                            var entry = new Dictionary<string, object>();
+                            for (int j = 0; j < header.Length; ++j)
                             {
                                 string value = values[j];
-                                
-                                if ( types[j].Contains ( "List" ) )
+
+                                if (types[j].Contains(TYPE_LIST))
                                 {
-                                    List<string> list = value.Split ( '#' ).ToList ( );
-                                    for ( int a = 0; a < list.Count; ++a )
+                                    List<string> list = value.Split('#').ToList();
+                                    List<object> temp = new List<object>();
+                                    for (int a = 0; a < list.Count; ++a)
                                     {
-                                        string temp = list[a];
-                                        temp = temp.TrimStart ( _trim_chars ).TrimEnd ( _trim_chars ).Replace ( "\\", "" );
-                                        list[a] = temp;
+                                        list[a] = list[a].TrimStart(_trim_chars).TrimEnd(_trim_chars).Replace("\\", "");
+                                        list[a] = list[a].Replace("<br>", "\n");
+                                        list[a] = list[a].Replace("<c>", ",");
+                                        temp.Add(Parsing(types[j], list[a]).Invoke());
                                     }
-                                    entry.Add ( header[j], list );
+                                    entry.Add(header[j], temp);
                                 }
                                 else
                                 {
-                                    value = value.TrimStart ( _trim_chars ).TrimEnd ( _trim_chars ).Replace ( "\\", "" );
-                                    value = value.Replace ( "<br>", "\n" );
-                                    value = value.Replace ( "<c>", "," );
+                                    value = value.TrimStart(_trim_chars).TrimEnd(_trim_chars).Replace("\\", "");
+                                    value = value.Replace("<br>", "\n");
+                                    value = value.Replace("<c>", ",");
 
-                                    if(types[j].Contains("int32"))
-                                    {
-                                        entry.Add ( header[j], Int32.Parse(value) );
-                                    }
-                                    else if(types[j].Contains("float"))
-                                    {
-                                        entry.Add ( header[j], float.Parse(value) );
-                                    }
-                                    else
-                                    {
-                                        entry.Add ( header[j], value );
-                                    }
+                                    entry.Add(header[j], Parsing(types[j], value).Invoke());
                                 }
                             }
-                            table[sheetName].Add ( entry );
+                            table[sheetName].Add(entry);
                         }
                     }
                 }
@@ -102,20 +114,25 @@ namespace TheLordServer.Table
             }
             return table;
         }
-        
-        public static Dictionary<string, object> Get(List<Dictionary<string, object>> sheet, string key, int index)
+
+        Func<object> Parsing(string type, string value)
         {
-            Dictionary<string, object> result = null;
-            foreach(var record in sheet)
+            Func<object> parsing = null;
+
+            if (type.Contains(TYPE_INT32))
             {
-                int value = (int)record[key];
-                if ( value == index )
-                {
-                    result = record;
-                    break;
-                }
+                parsing = () => Int32.Parse(value);
             }
-            return result;
+            else if (type.Contains(TYPE_FLOAT))
+            {
+                parsing = () => float.Parse(value);
+            }
+            else if (type.Contains(TYPE_STRING))
+            {
+                parsing = () => value;
+            }
+
+            return parsing;
         }
     }
 }
