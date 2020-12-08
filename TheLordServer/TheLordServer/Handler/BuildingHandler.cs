@@ -66,6 +66,11 @@ namespace TheLordServer.Handler
             workBuildingData.OnCompleted ( ( ) =>
             {
                 var buildingData = workBuildingData.GetResult ( );
+                if(buildingData == null)
+                {
+                    Failed ( peer, sendParameters );
+                    return;
+                }
                 int increase = ( buildingData.LV - 1 ) * (int)record["nextLV"];
                 BigInteger gold = new BigInteger ( ( (int)record["basePoint"] + increase ) * buildingClickData.value );
                 var workUserAssetData = MongoHelper.UserAssetCollection.Get ( peer.userData.Id ).GetAwaiter ( );
