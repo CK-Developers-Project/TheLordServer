@@ -73,17 +73,7 @@ namespace TheLordServer.Handler
                 }
                 int increase = ( buildingData.LV - 1 ) * (int)record["nextLV"];
                 BigInteger gold = new BigInteger ( ( (int)record["basePoint"] + increase ) * buildingClickData.value );
-                var workUserAssetData = MongoHelper.UserAssetCollection.Get ( peer.userData.Id ).GetAwaiter ( );
-                workUserAssetData.OnCompleted ( ( ) =>
-                {
-                    var userAssetData = workUserAssetData.GetResult ( );
-                    userAssetData.AddGold ( gold );
-                    var workUpdateGold = MongoHelper.UserAssetCollection.UpdateGold ( userAssetData ).GetAwaiter ( );
-                    workUpdateGold.OnCompleted ( ( ) =>
-                    {
-                        UserAssetEvent.OnUpdateResource ( peer );
-                    } );
-                } );
+                peer.userAgent.gold += gold;
             } );
         }
     }

@@ -1,6 +1,7 @@
 ﻿using Photon.SocketServer;
 using System;
 using System.Threading.Tasks;
+using System.Collections.Generic;
 
 namespace TheLordServer.Handler
 {
@@ -27,29 +28,109 @@ namespace TheLordServer.Handler
         {
             HandlerMedia.AddListener ( OperationCode.Login, OnLoginReceived );
             HandlerMedia.AddListener ( OperationCode.UserResistration, OnUserResistrationRecevied );
+            HandlerMedia.AddListener ( OperationCode.LobbyEnter, OnLobbyEnterRecevied );
         }
 
         public void RemoveListener ( )
         {
             HandlerMedia.RemoveListener ( OperationCode.Login, OnLoginReceived );
             HandlerMedia.RemoveListener ( OperationCode.UserResistration, OnUserResistrationRecevied );
+            HandlerMedia.RemoveListener ( OperationCode.LobbyEnter, OnLobbyEnterRecevied );
         }
 
+        #region Async Function - 내부 함수
+        /// <summary>
+        /// 유저를 생성하고 DB(UserData)에 정보를 저장합니다.
+        /// </summary>
         public async Task<UserData> Create ( UserData data, string id, string password )
         {
             data = new UserData ( id, password, DateTime.Now );
-            try
+            TheLordServer.Log.InfoFormat ( " [LoginHandler.Create] - {0} 유저가 생성되었습니다. ", id );
+            await MongoHelper.UserCollection.Add ( data );
+            return data;
+        }
+
+        /// <summary>
+        /// 유저의 첫 설정이 끝났다면 필요한 정보들을 초기화 하고 DB에 저장합니다.
+        /// </summary>
+        public async Task UserInitialize ( UserData userData )
+        {
+            var userAssetData = new UserAssetData ( userData.Id );
+            var userAssetDataTask = MongoHelper.UserAssetCollection.Add ( userAssetData );
+
+            var buildingData = new BuildingData ( userData.Id );
+            buildingData.LV = 1;
+            switch ( (Race)userData.Info.Race )
             {
-                TheLordServer.Log.InfoFormat ( " [LoginHandler.Create] - {0} 유저가 생성되었습니다. ", id );
-                await MongoHelper.UserCollection.Add(data);
-                return data;
+                case Race.Elf:
+                    buildingData.Index = 1;
+                    break;
+                case Race.Human:
+                    buildingData.Index = 101;
+                    break;
+                case Race.Undead:
+                    buildingData.Index = 201;
+                    break;
+                default:
+                    // [TODO] 에러 보내야함
+                    return;
             }
-            catch ( Exception e )
+            var buildingDataTask = MongoHelper.BuildingCollection.Add ( buildingData );
+
+            await Task.WhenAll (
+                new List<Task> 
+                { 
+                    userAssetDataTask, 
+                    buildingDataTask 
+                }
+            );
+        }
+
+        async Task DBLoad ( ClientPeer peer )
+        {
+            List<Task> work = new List<Task> ( );
+
+            var userAssetData = await MongoHelper.UserAssetCollection.Get ( peer.userData.Id );
+            if ( userAssetData == null )
             {
-                TheLordServer.Log.InfoFormat ( " [LoginHandler.Create] - {0} ", e.Message );
-                return null;
+                userAssetData = new UserAssetData ( peer.userData.Id );
+                work.Add ( MongoHelper.UserAssetCollection.Add ( userAssetData ) );
+            }
+
+
+            int buildingIndex;
+            switch ( (Race)peer.userData.Info.Race )
+            {
+                case Race.Elf:
+                    buildingIndex = 1;
+                    break;
+                case Race.Human:
+                    buildingIndex = 101;
+                    break;
+                case Race.Undead:
+                    buildingIndex = 201;
+                    break;
+                default:
+                    // TODO 에러 보냄
+                    return;
+            }
+
+            var buildingData = await MongoHelper.BuildingCollection.GetByIndex ( peer.userData.Id, buildingIndex );
+            if(buildingData == null)
+            {
+                buildingData = new BuildingData ( peer.userData.Id );
+                buildingData.LV = 1;
+                buildingData.Index = buildingIndex;
+                work.Add ( MongoHelper.BuildingCollection.Add ( buildingData ) );
+            }
+
+            if ( work.Count > 0 )
+            {
+                await Task.WhenAll ( work );
             }
         }
+        #endregion
+
 
         void OnLoginReceived( ClientPeer peer, OperationRequest operationRequest, SendParameters sendParameters )
         {
@@ -97,25 +178,31 @@ namespace TheLordServer.Handler
 
                         if (bSuccess)
                         {
+                            peer.userData = userData;
                             if (userData.Info.Race == 0 || string.IsNullOrEmpty(userData.Info.Nickname))
                             {
                                 response.ReturnCode = (short)NextAction.UserInfoCreate;
+                                peer.SendOperationResponse ( response, sendParameters );
                             }
                             else
                             {
-                                response.ReturnCode = (short)NextAction.LoginSuccess;
-                                ProtoData.UserData packet = new ProtoData.UserData();
-                                packet.nickname = userData.Info.Nickname;
-                                packet.race = userData.Info.Race;
-                                response.Parameters = BinSerializer.ConvertPacket(packet);
+                                var wokrUserInitialize = UserInitialize ( userData ).GetAwaiter ( );
+                                wokrUserInitialize.OnCompleted ( ( ) =>
+                                {
+                                    response.ReturnCode = (short)NextAction.LoginSuccess;
+                                    ProtoData.UserData packet = new ProtoData.UserData ( );
+                                    packet.nickname = userData.Info.Nickname;
+                                    packet.race = userData.Info.Race;
+                                    response.Parameters = BinSerializer.ConvertPacket ( packet );
+                                    peer.SendOperationResponse ( response, sendParameters );
+                                } );
                             }
-                            peer.userData = userData;
                         }
                         else
                         {
                             response.ReturnCode = (short)NextAction.LoginFailed;
+                            peer.SendOperationResponse ( response, sendParameters );
                         }
-                        peer.SendOperationResponse(response, sendParameters);
                     });
                 }
             });
@@ -163,6 +250,18 @@ namespace TheLordServer.Handler
                     }
                 }
             });
+        }
+
+        void OnLobbyEnterRecevied ( ClientPeer peer, OperationRequest operationRequest, SendParameters sendParameters )
+        {
+            // [Tooltip] 검증과정
+            var workDBLoad = DBLoad ( peer ).GetAwaiter ( );
+            workDBLoad.OnCompleted ( ( ) =>
+            {
+                OperationResponse response = new OperationResponse ( operationRequest.OperationCode );
+                response.ReturnCode = (byte)ReturnCode.Success;
+                peer.SendOperationResponse ( response, sendParameters );
+            } );
         }
     }
 }

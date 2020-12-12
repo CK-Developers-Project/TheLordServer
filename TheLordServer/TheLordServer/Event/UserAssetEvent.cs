@@ -18,29 +18,17 @@ namespace TheLordServer.Event
              {
                  var userAsset = workUserAsset.GetResult ( );
 
-                 if( userAsset == null)
+                 if ( userAsset == null )
                  {
-                     UserAssetData newUserAsset = new UserAssetData ( peer.userData.Id );
-                     var workAdd = MongoHelper.UserAssetCollection.Add ( newUserAsset ).GetAwaiter ( );
-                     workAdd.OnCompleted ( ( ) =>
-                     {
-                         EventData data = new EventData ( (byte)EventCode.UpdateResource );
-                         ProtoData.ResourceData packet = new ProtoData.ResourceData ( );
-                         packet.gold = newUserAsset.Gold;
-                         packet.cash = newUserAsset.Cash;
-                         data.Parameters = BinSerializer.ConvertPacket ( packet );
-                         peer.SendEvent ( data, new SendParameters ( ) );
-                     } );
+                     return;
                  }
-                 else
-                 {
-                     EventData data = new EventData ( (byte)EventCode.UpdateResource );
-                     ProtoData.ResourceData packet = new ProtoData.ResourceData ( );
-                     packet.gold = userAsset.Gold;
-                     packet.cash = userAsset.Cash;
-                     data.Parameters = BinSerializer.ConvertPacket ( packet );
-                     peer.SendEvent ( data, new SendParameters ( ) );
-                 }
+
+                 EventData data = new EventData ( (byte)EventCode.UpdateResource );
+                 ProtoData.ResourceData packet = new ProtoData.ResourceData ( );
+                 packet.gold = userAsset.Gold + peer.userAgent.gold;
+                 packet.cash = userAsset.Cash;
+                 data.Parameters = BinSerializer.ConvertPacket ( packet );
+                 peer.SendEvent ( data, new SendParameters ( ) );
              } );
         }
     }

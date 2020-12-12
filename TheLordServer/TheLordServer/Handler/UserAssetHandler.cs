@@ -19,12 +19,6 @@ namespace TheLordServer.Handler
             HandlerMedia.RemoveListener(OperationCode.RequestResource, OnRequestResourceReceived);
         }
 
-
-        void OnCheckUserInfoReceived ( ClientPeer peer, OperationRequest operationRequest, SendParameters sendParameters )
-        {
-
-        }
-
         void OnRequestResourceReceived ( ClientPeer peer, OperationRequest operationRequest, SendParameters sendParameters )
         {
             UserAssetEvent.OnUpdateResource ( peer );

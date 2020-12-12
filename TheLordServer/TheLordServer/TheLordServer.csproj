@@ -89,8 +89,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Agent\UserAgent.cs" />
     <Compile Include="ClientPeer.cs" />
     <Compile Include="Event\UserAssetEvent.cs" />
+    <Compile Include="Event\UserEvent.cs" />
     <Compile Include="HandlerMedia.cs" />
     <Compile Include="Handler\BuildingHandler.cs" />
     <Compile Include="Handler\IBaseHandler.cs" />
