@@ -78,4 +78,61 @@ namespace ProtoData
       { return global::ProtoBuf.Extensible.GetExtensionObject(ref extensionObject, createIfMissing); }
   }
   
+  [global::System.Serializable, global::ProtoBuf.ProtoContract(Name=@"DBLoadData")]
+  public partial class DBLoadData : global::ProtoBuf.IExtensible
+  {
+    public DBLoadData() {}
+    
+    private ProtoData.ResourceData _resourceData;
+    [global::ProtoBuf.ProtoMember(1, IsRequired = true, Name=@"resourceData", DataFormat = global::ProtoBuf.DataFormat.Default)]
+    public ProtoData.ResourceData resourceData
+    {
+      get { return _resourceData; }
+      set { _resourceData = value; }
+    }
+    private readonly global::System.Collections.Generic.List<ProtoData.DBLoadData.BuildingData> _buildingDataList = new global::System.Collections.Generic.List<ProtoData.DBLoadData.BuildingData>();
+    [global::ProtoBuf.ProtoMember(2, Name=@"buildingDataList", DataFormat = global::ProtoBuf.DataFormat.Default)]
+    public global::System.Collections.Generic.List<ProtoData.DBLoadData.BuildingData> buildingDataList
+    {
+      get { return _buildingDataList; }
+    }
+  
+  [global::System.Serializable, global::ProtoBuf.ProtoContract(Name=@"BuildingData")]
+  public partial class BuildingData : global::ProtoBuf.IExtensible
+  {
+    public BuildingData() {}
+    
+    private int _index;
+    [global::ProtoBuf.ProtoMember(1, IsRequired = true, Name=@"index", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
+    public int index
+    {
+      get { return _index; }
+      set { _index = value; }
+    }
+    private int _LV = default(int);
+    [global::ProtoBuf.ProtoMember(2, IsRequired = false, Name=@"LV", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
+    [global::System.ComponentModel.DefaultValue(default(int))]
+    public int LV
+    {
+      get { return _LV; }
+      set { _LV = value; }
+    }
+    private long _tick = default(long);
+    [global::ProtoBuf.ProtoMember(3, IsRequired = false, Name=@"tick", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
+    [global::System.ComponentModel.DefaultValue(default(long))]
+    public long tick
+    {
+      get { return _tick; }
+      set { _tick = value; }
+    }
+    private global::ProtoBuf.IExtension extensionObject;
+    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
+      { return global::ProtoBuf.Extensible.GetExtensionObject(ref extensionObject, createIfMissing); }
+  }
+  
+    private global::ProtoBuf.IExtension extensionObject;
+    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
+      { return global::ProtoBuf.Extensible.GetExtensionObject(ref extensionObject, createIfMissing); }
+  }
+  
 }

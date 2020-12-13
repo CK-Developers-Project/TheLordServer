@@ -1,6 +1,6 @@
 //CharacterInfo
 index,name,cost,ability,atk,def,hp,speed,atkCooltime,distance
-int32,string,int32,List<int32>,int32,int32,int32,int32,int32,int32
+int32,string,int32,List<int32>,float,float,float,float,float,float
 1,엘프 궁수,500,5,150,100,150,1,1.1,0
 2,엘프 드루이드,2500,5,225,140,300,0.9,1,0
 3,엘프 바드,5000,5,337.5,196,600,1.1,0.9,0

@@ -86,7 +86,7 @@ namespace TheLordServer.Handler
             );
         }
 
-        async Task DBLoad ( ClientPeer peer )
+        async Task<Dictionary<byte, object>> DBLoad ( ClientPeer peer )
         {
             List<Task> work = new List<Task> ( );
 
@@ -96,7 +96,7 @@ namespace TheLordServer.Handler
                 userAssetData = new UserAssetData ( peer.userData.Id );
                 work.Add ( MongoHelper.UserAssetCollection.Add ( userAssetData ) );
             }
-
+            peer.userAgent.gold = new BigInteger ( userAssetData.Gold );
 
             int buildingIndex;
             switch ( (Race)peer.userData.Info.Race )
@@ -112,7 +112,7 @@ namespace TheLordServer.Handler
                     break;
                 default:
                     // TODO 에러 보냄
-                    return;
+                    return null;
             }
 
             var buildingData = await MongoHelper.BuildingCollection.GetByIndex ( peer.userData.Id, buildingIndex );
@@ -128,6 +128,22 @@ namespace TheLordServer.Handler
             {
                 await Task.WhenAll ( work );
             }
+
+            var buildingListData = await MongoHelper.BuildingCollection.GetAll ( peer.userData.Id );
+
+            ProtoData.DBLoadData DBLoadData = new ProtoData.DBLoadData ( );
+            DBLoadData.resourceData = new ProtoData.ResourceData ( );
+            DBLoadData.resourceData.gold = userAssetData.Gold;
+            DBLoadData.resourceData.cash = userAssetData.Cash;
+            foreach(var data in buildingListData)
+            {
+                ProtoData.DBLoadData.BuildingData bd = new ProtoData.DBLoadData.BuildingData ( );
+                bd.index = data.Index;
+                bd.LV = data.LV;
+                bd.tick = data.WorkTime.Ticks;
+                DBLoadData.buildingDataList.Add ( bd );
+            }
+            return BinSerializer.ConvertPacket ( DBLoadData );
         }
         #endregion
 
@@ -258,8 +274,19 @@ namespace TheLordServer.Handler
             var workDBLoad = DBLoad ( peer ).GetAwaiter ( );
             workDBLoad.OnCompleted ( ( ) =>
             {
+                var DBLoadData = workDBLoad.GetResult ( );
                 OperationResponse response = new OperationResponse ( operationRequest.OperationCode );
-                response.ReturnCode = (byte)ReturnCode.Success;
+
+                if (DBLoadData == null)
+                {
+                    response.ReturnCode = (short)ReturnCode.Failed;
+                }
+                else
+                {
+                    response.ReturnCode = (short)ReturnCode.Success;
+                    response.Parameters = DBLoadData;
+                }
+                
                 peer.SendOperationResponse ( response, sendParameters );
             } );
         }

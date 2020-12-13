@@ -17,8 +17,8 @@ namespace TheLordServer.MongoDB.Model
             try
             {
                 var filter = Builders<UserData>.Filter.Eq ( "_id", data.Id );
-                var update = Builders<UserData>.Update.Set ( (x)=> x.Info, data.Info );
-                await collection.UpdateOneAsync ( filter, update );
+                var update = Builders<UserData>.Update.Set ( ( x ) => x.Info, data.Info );
+                await collection.UpdateOneAsync ( filter, update, new UpdateOptions ( ) { IsUpsert = true } );
             }
             catch ( MongoException e )
             {
@@ -32,7 +32,7 @@ namespace TheLordServer.MongoDB.Model
             {
                 var filter = Builders<UserData>.Filter.Eq ( "_id", data.Id );
                 var update = Builders<UserData>.Update.Set ( "Password", data.Password );
-                await collection.UpdateOneAsync ( filter, update );
+                await collection.UpdateOneAsync ( filter, update, new UpdateOptions ( ) { IsUpsert = true } );
             }
             catch ( MongoException e )
             {

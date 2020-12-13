@@ -1,4 +1,5 @@
 syntax = "proto2";
+package ProtoData;
 
 message BuildingClickData {
     required int32 index = 1;

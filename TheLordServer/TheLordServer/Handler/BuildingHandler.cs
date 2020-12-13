@@ -10,7 +10,7 @@ namespace TheLordServer.Handler
     using MongoDB.Model;
     using Event;
 
-    public class BuildingHandler : Singleton<UserAssetHandler>, IBaseHandler
+    public class BuildingHandler : Singleton<BuildingHandler>, IBaseHandler
     {
         enum ClickAction : int
         {
@@ -20,12 +20,12 @@ namespace TheLordServer.Handler
 
         public void AddListener ( )
         {
-            HandlerMedia.AddListener ( OperationCode.BuildingClick, OnBuildingClick );
+            HandlerMedia.AddListener ( OperationCode.BuildingClick, OnBuildingClickReceived );
         }
 
         public void RemoveListener ( )
         {
-            HandlerMedia.RemoveListener ( OperationCode.BuildingClick, OnBuildingClick );
+            HandlerMedia.RemoveListener ( OperationCode.BuildingClick, OnBuildingClickReceived );
         }
 
         public void Failed ( ClientPeer peer, SendParameters sendParameters )
@@ -35,11 +35,9 @@ namespace TheLordServer.Handler
             peer.SendOperationResponse ( response, sendParameters );
         }
 
-        void OnBuildingClick(ClientPeer peer, OperationRequest operationRequest, SendParameters sendParameters)
+        void OnBuildingClickReceived(ClientPeer peer, OperationRequest operationRequest, SendParameters sendParameters)
         {
-            byte[] bytes = (byte[])DictionaryTool.GetValue<byte, object> ( operationRequest.Parameters, 1 );
-            ProtoData.BuildingClickData buildingClickData = BinSerializer.Deserialize<ProtoData.BuildingClickData> ( bytes );
-
+            var buildingClickData = BinSerializer.ConvertData<ProtoData.BuildingClickData> ( operationRequest.Parameters );
             switch ( (ClickAction)buildingClickData.clickAction )
             {
                 case ClickAction.MainBuildingTakeGold:
@@ -71,8 +69,8 @@ namespace TheLordServer.Handler
                     Failed ( peer, sendParameters );
                     return;
                 }
-                int increase = ( buildingData.LV - 1 ) * (int)record["nextLV"];
-                BigInteger gold = new BigInteger ( ( (int)record["basePoint"] + increase ) * buildingClickData.value );
+                int increase = buildingData.LV * (int)record["nextLV"];
+                BigInteger gold = new BigInteger ( increase * buildingClickData.value );
                 peer.userAgent.gold += gold;
             } );
         }

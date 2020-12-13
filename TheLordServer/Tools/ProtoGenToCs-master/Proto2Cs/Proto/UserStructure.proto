@@ -1,4 +1,5 @@
 syntax = "proto2";
+package ProtoData;
 
 message UserData {
 	optional string id = 1;
@@ -10,4 +11,15 @@ message UserData {
 message ResourceData {
 	optional string gold = 1;
 	optional string cash = 2;
+}
+
+message DBLoadData {
+	message BuildingData {
+		required int32 index = 1;
+		optional int32 LV = 2;
+		optional int64 tick = 3;
+	}
+
+	required ResourceData resourceData = 1;
+	repeated BuildingData buildingDataList = 2;
 }

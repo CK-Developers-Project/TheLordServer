@@ -27,11 +27,11 @@ namespace TheLordServer
                     {
                         return;
                     }
-                    userAssetData.AddGold ( userAgent.gold );
-                    var workUpdateGold = MongoHelper.UserAssetCollection.UpdateGold ( userAssetData ).GetAwaiter ( );
+                    userAssetData.Resource.Gold = userAgent.gold.ToString ( );
+                    var workUpdateGold = MongoHelper.UserAssetCollection.UpdateResource ( userAssetData ).GetAwaiter ( );
                     workUpdateGold.OnCompleted ( ( ) =>
                     {
-                        TheLordServer.Log.InfoFormat ( "[{0}]의 골드 값이 갱신되었습니다.", userData.Id );
+                        TheLordServer.Log.InfoFormat ( "{0} 님의 골드가 [{1}] 갱신되었습니다.", userData.Info.Nickname, userAssetData.Gold );
                     } );
                 } );
             }

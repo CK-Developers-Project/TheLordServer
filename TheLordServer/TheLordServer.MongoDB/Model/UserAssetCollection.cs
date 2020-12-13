@@ -12,31 +12,18 @@ namespace TheLordServer.MongoDB.Model
         {
         }
 
-        public async Task UpdateGold( UserAssetData data )
+        public async Task UpdateResource( UserAssetData data )
         {
             try
             {
                 var filter = Builders<UserAssetData>.Filter.Eq ( "_id", data.Id );
-                var update = Builders<UserAssetData>.Update.Set ( ( x ) => x.Gold, data.Gold );
-                await collection.UpdateOneAsync ( filter, update );
+                var update = Builders<UserAssetData>.Update.Set ( ( x ) => x.Resource, data.Resource );
+                                                 
+                await collection.UpdateOneAsync ( filter, update, new UpdateOptions ( ) { IsUpsert = true } );
             }
             catch(MongoException e)
             {
                 MongoHelper.Log.ErrorFormat ( "[{0}.UpdateGold] Error - {1}", typeof ( UserAssetCollection ).Name, e.Message );
-            }
-        }
-
-        public async Task UpdateCash ( UserAssetData data )
-        {
-            try
-            {
-                var filter = Builders<UserAssetData>.Filter.Eq ( "_id", data.Id );
-                var update = Builders<UserAssetData>.Update.Set ( ( x ) => x.Cash, data.Cash );
-                await collection.UpdateOneAsync ( filter, update );
-            }
-            catch ( MongoException e )
-            {
-                MongoHelper.Log.ErrorFormat ( "[{0}.UpdateCash] Error - {1}", typeof ( UserAssetCollection ).Name, e.Message );
             }
         }
     }

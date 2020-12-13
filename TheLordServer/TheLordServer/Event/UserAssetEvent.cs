@@ -25,7 +25,7 @@ namespace TheLordServer.Event
 
                  EventData data = new EventData ( (byte)EventCode.UpdateResource );
                  ProtoData.ResourceData packet = new ProtoData.ResourceData ( );
-                 packet.gold = userAsset.Gold + peer.userAgent.gold;
+                 packet.gold = peer.userAgent.gold.ToString();
                  packet.cash = userAsset.Cash;
                  data.Parameters = BinSerializer.ConvertPacket ( packet );
                  peer.SendEvent ( data, new SendParameters ( ) );

@@ -20,11 +20,27 @@ namespace TheLordServer.MongoDB.Model
                 var filter = Builders<BuildingData>.Filter.Eq ( "_id", data.Id ) &
                              Builders<BuildingData>.Filter.Eq( "Index", data.Index);
                 var update = Builders<BuildingData>.Update.Set ( ( x ) => x.LV, data.LV );
-                await collection.UpdateOneAsync ( filter, update );
+                await collection.UpdateOneAsync ( filter, update, new UpdateOptions ( ) { IsUpsert = true } );
             }
             catch ( MongoException e )
             {
                 MongoHelper.Log.ErrorFormat ( "[{0}.UpdateLV] Error - {1}", typeof ( BuildingData ).Name, e.Message );
+            }
+        }
+
+        public async Task UpdateWorkTime(BuildingData data)
+        {
+            try
+            {
+                var filter = Builders<BuildingData>.Filter.Eq ( "_id", data.Id ) &
+                             Builders<BuildingData>.Filter.Eq ( "WorkTime", data.WorkTime );
+                var update = Builders<BuildingData>.Update.Set ( ( x ) => x.WorkTime, data.WorkTime );
+
+                await collection.UpdateOneAsync ( filter, update, new UpdateOptions ( ) { IsUpsert = true } );
+            }
+            catch ( MongoException e )
+            {
+                MongoHelper.Log.ErrorFormat ( "[{0}.UpdateWorkTime] Error - {1}", typeof ( BuildingData ).Name, e.Message );
             }
         }
 

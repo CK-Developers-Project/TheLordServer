@@ -1,4 +1,4 @@
-﻿using System;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using MongoDB.Bson;
 using MongoDB.Driver;
@@ -16,6 +16,17 @@ namespace TheLordServer.MongoDB.Model
             collection = database.GetCollection<T> ( name );
         }
 
+        /*public List<T> GetAll()
+        {
+            return collection.Find<T> ( Builders<T>.Filter.Empty ).ToList ( );
+        }*/
+
+        /*public void UpdateAll()
+        {
+            var filter = Builders<T>.Filter.Empty;
+            collection.UpdateOne ( filter, Builders<T>.Update.AddToSet ( "WorkTime", new System.DateTime() ) );
+        }*/
+
         public async Task<T> Get (ObjectId id)
         {
             try
@@ -28,6 +39,21 @@ namespace TheLordServer.MongoDB.Model
             {
                 MongoHelper.Log.ErrorFormat ( "[{0}.Get] Error - {1}", typeof ( T ).Name, e.Message );
                 return default ( T );
+            }
+        }
+
+        public async Task<List<T>> GetAll (ObjectId id)
+        {
+            try
+            {
+                var data = await collection.FindAsync ( Builders<T>.Filter.Eq ( "_id", id ) );
+                var datas = data.ToList ( );
+                return datas.Count > 0 ? datas : null;
+            }
+            catch ( MongoException e )
+            {
+                MongoHelper.Log.ErrorFormat ( "[{0}.GetAll] Error - {1}", typeof ( T ).Name, e.Message );
+                return null;
             }
         }
 
