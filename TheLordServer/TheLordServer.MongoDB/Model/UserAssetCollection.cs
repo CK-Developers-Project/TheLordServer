@@ -19,7 +19,7 @@ namespace TheLordServer.MongoDB.Model
                 var filter = Builders<UserAssetData>.Filter.Eq ( "_id", data.Id );
                 var update = Builders<UserAssetData>.Update.Set ( ( x ) => x.Resource, data.Resource );
                                                  
-                await collection.UpdateOneAsync ( filter, update, new UpdateOptions ( ) { IsUpsert = true } );
+                await collection.UpdateOneAsync ( filter, update );
             }
             catch(MongoException e)
             {
