@@ -111,6 +111,7 @@ namespace TheLordServer.Handler
                     buildingIndex = 201;
                     break;
                 default:
+                    TheLordServer.Log.ErrorFormat ( "[{0}]의 [{1}]종족값이 이상합니다.", peer.userData.Id, peer.userData.Info.Race );
                     // TODO 에러 보냄
                     return null;
             }
@@ -262,7 +263,8 @@ namespace TheLordServer.Handler
                             packet.race = userData.Info.Race;
                             response.Parameters = BinSerializer.ConvertPacket(packet);
                             peer.SendOperationResponse(response, sendParameters);
-                        });
+                            peer.userData = userData;
+                        } );
                     }
                 }
             });
