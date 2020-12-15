@@ -36,7 +36,7 @@ namespace TheLordServer
                 } );
             }
 
-            TheLordServer.Log.InfoFormat ( "[{0}]의 연결이 끊겼습니다.", userData.Id );
+            TheLordServer.Log.InfoFormat ( "[{0}]의 연결이 끊겼습니다.", LocalIP );
             TheLordServer.Instance.peerList.Remove(this);
         }
 
