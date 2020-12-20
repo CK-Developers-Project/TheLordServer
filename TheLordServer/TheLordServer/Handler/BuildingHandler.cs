@@ -137,7 +137,7 @@ namespace TheLordServer.Handler
 
                     response.ReturnCode = (short)ReturnCode.Success;
                     response.Parameters = BinSerializer.ConvertPacket(packet);
-                    BuildingEvent.OnUpdateBuildTime ( peer, index );
+                    BuildingEvent.OnUpdateBuilding ( peer, index );
                 }
                 else
                 {
@@ -150,7 +150,7 @@ namespace TheLordServer.Handler
 
                     response.ReturnCode = (short)ReturnCode.Success;
                     response.Parameters = BinSerializer.ConvertPacket(packet);
-                    BuildingEvent.OnUpdateBuildTime ( peer, index );
+                    BuildingEvent.OnUpdateBuilding ( peer, index );
 
                     BigInteger gold = new BigInteger(cost);
                     peer.userAgent.UserAssetData.AddGold(-gold);
@@ -229,7 +229,7 @@ namespace TheLordServer.Handler
 
                         response.ReturnCode = (short)ReturnCode.Success;
                         response.Parameters = BinSerializer.ConvertPacket(packet);
-                        BuildingEvent.OnUpdateBuildTime ( peer, index );
+                        BuildingEvent.OnUpdateBuilding ( peer, index );
                     }
                     else
                     {
@@ -242,7 +242,7 @@ namespace TheLordServer.Handler
 
                         response.ReturnCode = (short)ReturnCode.Success;
                         response.Parameters = BinSerializer.ConvertPacket(packet);
-                        BuildingEvent.OnUpdateBuildTime ( peer, index );
+                        BuildingEvent.OnUpdateBuilding ( peer, index );
 
                         BigInteger gold = new BigInteger(cost);
                         peer.userAgent.UserAssetData.AddGold(-gold);

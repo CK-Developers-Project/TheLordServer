@@ -9,7 +9,7 @@ namespace TheLordServer.Event
 
     public class BuildingEvent
     {
-        public static void OnUpdateBuildTime(ClientPeer peer, int index)
+        public static void OnUpdateBuilding(ClientPeer peer, int index)
         {
             if(peer.userAgent.UserData == null)
             {
