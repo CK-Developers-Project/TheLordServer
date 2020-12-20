@@ -113,7 +113,7 @@ namespace TheLordServer.Handler
             if ( buildingData == null )
             {
                 buildingData = new BuildingData ( peer.Id );
-                buildingData.Index = buildingClickData.index;
+                buildingData.Index = index;
                 buildingData.LV = 0;
                 buildingData.CharactertData.Index = unitCreate;
             }
@@ -126,9 +126,11 @@ namespace TheLordServer.Handler
             else
             {
                 buildingData.WorkTime = DateTime.Now + new TimeSpan ( 0, 0, second );
-                ProtoData.BuildingData packet = new ProtoData.BuildingData ( );
-                packet.index = buildingClickData.index;
-                packet.tick = buildingData.WorkTime.Ticks;
+
+                var packet = new ProtoData.BuildingClickData ( );
+                packet.index = index;
+                packet.clickAction = buildingClickData.clickAction;
+                packet.value = buildingData.WorkTime.Ticks;
 
                 response.Parameters = BinSerializer.ConvertPacket ( packet );
                 response.ReturnCode = (short)ReturnCode.Success;
