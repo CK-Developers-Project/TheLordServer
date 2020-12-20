@@ -26,7 +26,7 @@ namespace TheLordServer.MongoDB.CollectionData
             Key = key;
             Index = 0;
             LV = 0;
-            WorkTime = default;
+            WorkTime = new DateTime();
             CharactertData = new CharacterData ( );
         }
     }

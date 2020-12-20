@@ -20,7 +20,7 @@ namespace TheLordServer.Event
             }
 
             EventData data = new EventData ( (byte)EventCode.UpdateResource );
-            ProtoData.ResourceData packet = new ProtoData.ResourceData ( );
+            var packet = new ProtoData.ResourceData ( );
             packet.gold = peer.userAgent.UserAssetData.Gold;
             packet.cash = peer.userAgent.UserAssetData.Cash;
             data.Parameters = BinSerializer.ConvertPacket ( packet );

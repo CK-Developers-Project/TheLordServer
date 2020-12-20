@@ -134,10 +134,10 @@ namespace TheLordServer.Handler
                     var packet = new ProtoData.BuildingClickData();
                     packet.index = index;
                     packet.clickAction = buildingClickData.clickAction;
-                    packet.value = buildingData.WorkTime.Ticks;
 
                     response.ReturnCode = (short)ReturnCode.Success;
                     response.Parameters = BinSerializer.ConvertPacket(packet);
+                    BuildingEvent.OnUpdateBuildTime ( peer, index );
                 }
                 else
                 {
@@ -147,10 +147,10 @@ namespace TheLordServer.Handler
                     var packet = new ProtoData.BuildingClickData();
                     packet.index = index;
                     packet.clickAction = buildingClickData.clickAction;
-                    packet.value = buildingData.WorkTime.Ticks;
 
-                    response.Parameters = BinSerializer.ConvertPacket(packet);
                     response.ReturnCode = (short)ReturnCode.Success;
+                    response.Parameters = BinSerializer.ConvertPacket(packet);
+                    BuildingEvent.OnUpdateBuildTime ( peer, index );
 
                     BigInteger gold = new BigInteger(cost);
                     peer.userAgent.UserAssetData.AddGold(-gold);
@@ -226,10 +226,10 @@ namespace TheLordServer.Handler
                         var packet = new ProtoData.BuildingClickData();
                         packet.index = index;
                         packet.clickAction = buildingClickData.clickAction;
-                        packet.value = buildingData.WorkTime.Ticks;
 
                         response.ReturnCode = (short)ReturnCode.Success;
                         response.Parameters = BinSerializer.ConvertPacket(packet);
+                        BuildingEvent.OnUpdateBuildTime ( peer, index );
                     }
                     else
                     {
@@ -239,10 +239,10 @@ namespace TheLordServer.Handler
                         var packet = new ProtoData.BuildingClickData();
                         packet.index = index;
                         packet.clickAction = buildingClickData.clickAction;
-                        packet.value = buildingData.WorkTime.Ticks;
 
-                        response.Parameters = BinSerializer.ConvertPacket(packet);
                         response.ReturnCode = (short)ReturnCode.Success;
+                        response.Parameters = BinSerializer.ConvertPacket(packet);
+                        BuildingEvent.OnUpdateBuildTime ( peer, index );
 
                         BigInteger gold = new BigInteger(cost);
                         peer.userAgent.UserAssetData.AddGold(-gold);

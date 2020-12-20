@@ -63,7 +63,6 @@ namespace TheLordServer.Handler
             {
                 peer.userAgent.BuildingDataList = new List<BuildingData> ( );
             }
-
             int buildingIndex = 0;
             switch ( (Race)peer.userAgent.UserData.Info.Race )
             {
@@ -100,7 +99,7 @@ namespace TheLordServer.Handler
                 ProtoData.DBLoadData.BuildingData bd = new ProtoData.DBLoadData.BuildingData ( );
                 bd.index = data.Index;
                 bd.LV = data.LV;
-                bd.tick = data.WorkTime.Ticks;
+                bd.tick = data.WorkTime.ToString ( );
                 DBLoadData.buildingDataList.Add ( bd );
             }
             return BinSerializer.ConvertPacket ( DBLoadData );

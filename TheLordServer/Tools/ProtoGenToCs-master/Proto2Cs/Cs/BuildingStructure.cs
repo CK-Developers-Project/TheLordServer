@@ -29,10 +29,10 @@ namespace ProtoData
       get { return _clickAction; }
       set { _clickAction = value; }
     }
-    private long _value = default(long);
+    private int _value = default(int);
     [global::ProtoBuf.ProtoMember(3, IsRequired = false, Name=@"value", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
-    [global::System.ComponentModel.DefaultValue(default(long))]
-    public long value
+    [global::System.ComponentModel.DefaultValue(default(int))]
+    public int value
     {
       get { return _value; }
       set { _value = value; }
@@ -86,10 +86,10 @@ namespace ProtoData
       get { return _LV; }
       set { _LV = value; }
     }
-    private long _tick = default(long);
-    [global::ProtoBuf.ProtoMember(3, IsRequired = false, Name=@"tick", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
-    [global::System.ComponentModel.DefaultValue(default(long))]
-    public long tick
+    private string _tick = "";
+    [global::ProtoBuf.ProtoMember(3, IsRequired = false, Name=@"tick", DataFormat = global::ProtoBuf.DataFormat.Default)]
+    [global::System.ComponentModel.DefaultValue("")]
+    public string tick
     {
       get { return _tick; }
       set { _tick = value; }

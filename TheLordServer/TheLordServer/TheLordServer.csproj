@@ -91,6 +91,7 @@
   <ItemGroup>
     <Compile Include="Agent\UserAgent.cs" />
     <Compile Include="ClientPeer.cs" />
+    <Compile Include="Event\BuildingEvent.cs" />
     <Compile Include="Event\UserAssetEvent.cs" />
     <Compile Include="Event\UserEvent.cs" />
     <Compile Include="HandlerMedia.cs" />
