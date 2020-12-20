@@ -151,10 +151,10 @@ namespace TheLordServer.Handler
             switch ( (ConfirmAction)buildingConfirmData.confirmAction )
             {
                 case ConfirmAction.Build:
-                    ConfirmAction_Build ( );
+                    ConfirmAction_Build (peer, operationRequest, sendParameters, buildingConfirmData);
                     break;
                 case ConfirmAction.LevelUp:
-                    ConfirmAction_LevelUp ( );
+                    ConfirmAction_LevelUp ( peer, operationRequest, sendParameters, buildingConfirmData);
                     break;
                 default:
                     Failed ( peer, sendParameters );
@@ -162,14 +162,58 @@ namespace TheLordServer.Handler
             }
         }
 
-        private void ConfirmAction_LevelUp ( )
+        private void ConfirmAction_Build(ClientPeer peer, OperationRequest operationRequest, SendParameters sendParameters, ProtoData.BuildingConfirmData buildingConfirmData)
         {
-            throw new NotImplementedException ( );
+            int index = buildingConfirmData.index;
+            var buildingData = peer.userAgent.BuildingDataList.Find(x => x.Index == index);
+            OperationResponse response = new OperationResponse(operationRequest.OperationCode);
+
+            if (buildingData == null)
+            {
+                // 건물이 없음 예외처리
+            }
+            else
+            {
+                if (buildingData.WorkTime.Ticks <= 0)
+                {
+                    buildingData.LV = 1;
+                    buildingData.WorkTime = default;
+                    response.ReturnCode = (short)ReturnCode.Success;
+                }
+                else
+                {
+                    // 시간 예외처리
+                }
+            }
+
+            peer.SendOperationResponse(response, sendParameters);
         }
 
-        private void ConfirmAction_Build ( )
+        private void ConfirmAction_LevelUp (ClientPeer peer, OperationRequest operationRequest, SendParameters sendParameters, ProtoData.BuildingConfirmData buildingConfirmData)
         {
-            throw new NotImplementedException ( );
+            int index = buildingConfirmData.index;
+            var buildingData = peer.userAgent.BuildingDataList.Find(x => x.Index == index);
+            OperationResponse response = new OperationResponse(operationRequest.OperationCode);
+
+            if (buildingData == null)
+            {
+                // 건물이 없음 예외처리
+            }
+            else
+            {
+                if (buildingData.WorkTime.Ticks <= 0)
+                {
+                    buildingData.LV++;
+                    buildingData.WorkTime = default;
+                    response.ReturnCode = (short)ReturnCode.Success;
+                }
+                else
+                {
+                    // 시간 예외처리
+                }
+            }
+
+            peer.SendOperationResponse(response, sendParameters);
         }
     }
 }
