@@ -109,6 +109,16 @@ namespace TheLordServer.Handler
 
             int unitCreate = (int)record["unitCreate"];
 
+            int cost = (int)record["cost"];
+
+            if (peer.userAgent.UserAssetData.GetGold() < cost)
+            {
+                // 돈 부족 예외처리
+                response.ReturnCode = (short)ReturnCode.Failed;
+                peer.SendOperationResponse(response, sendParameters);
+                return;
+            }
+
             if (buildingData == null)
             {
                 buildingData = new BuildingData(peer.Id);
@@ -135,8 +145,11 @@ namespace TheLordServer.Handler
 
                 response.Parameters = BinSerializer.ConvertPacket ( packet );
                 response.ReturnCode = (short)ReturnCode.Success;
-                peer.SendOperationResponse ( response, sendParameters );
+
+                BigInteger gold = new BigInteger(cost);
+                peer.userAgent.UserAssetData.AddGold(-gold);
             }
+            peer.SendOperationResponse(response, sendParameters);
         }
 
         private void ClickAction_BuildingLevelUp ( ClientPeer peer, ProtoData.BuildingClickData buildingClickData, byte operationCode, SendParameters sendParameters )
@@ -229,6 +242,7 @@ namespace TheLordServer.Handler
                 }
             }
 
+            response.Parameters = BinSerializer.ConvertPacket(buildingConfirmData);
             peer.SendOperationResponse(response, sendParameters);
         }
 
@@ -258,6 +272,7 @@ namespace TheLordServer.Handler
                 }
             }
 
+            response.Parameters = BinSerializer.ConvertPacket(buildingConfirmData);
             peer.SendOperationResponse(response, sendParameters);
         }
     }
