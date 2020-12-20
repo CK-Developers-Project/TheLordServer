@@ -20,15 +20,22 @@ namespace TheLordServer.Handler
             CharacterHire,          // 캐릭터를 고용
         }
 
+        public enum ConfirmAction : int
+        {
+            Build,                  // 건물 지음 확인
+            LevelUp,                // 건물 레벨업
+        }
 
         public void AddListener ( )
         {
             HandlerMedia.AddListener ( OperationCode.BuildingClick, OnBuildingClickReceived );
+            HandlerMedia.AddListener ( OperationCode.BuildingConfirm, OnBuildingConfirmReceived );
         }
 
         public void RemoveListener ( )
         {
             HandlerMedia.RemoveListener ( OperationCode.BuildingClick, OnBuildingClickReceived );
+            HandlerMedia.RemoveListener ( OperationCode.BuildingConfirm, OnBuildingConfirmReceived );
         }
 
         public void Failed ( ClientPeer peer, SendParameters sendParameters )
@@ -44,16 +51,16 @@ namespace TheLordServer.Handler
             switch ( (ClickAction)buildingClickData.clickAction )
             {
                 case ClickAction.MainBuildingTakeGold:
-                    MainBuildingTakeGold ( peer, buildingClickData, sendParameters );
+                    ClickAction_MainBuildingTakeGold ( peer, buildingClickData, sendParameters );
                     break;
                 case ClickAction.BuildingBuild:
-                    BuildingBuild ( peer, buildingClickData, operationRequest.OperationCode, sendParameters );
+                    ClickAction_BuildingBuild ( peer, buildingClickData, operationRequest.OperationCode, sendParameters );
                     break;
                 case ClickAction.BuildingLevelUp:
-                    BuildingLevelUp ( peer, buildingClickData, sendParameters );
+                    ClickAction_BuildingLevelUp ( peer, buildingClickData, sendParameters );
                     break;
                 case ClickAction.CharacterHire:
-                    CharacterHire ( peer, buildingClickData, sendParameters );
+                    CkickAction_CharacterHire ( peer, buildingClickData, sendParameters );
                     break;
                 default:
                     Failed ( peer, sendParameters );
@@ -61,7 +68,7 @@ namespace TheLordServer.Handler
             }
         }
 
-        void MainBuildingTakeGold ( ClientPeer peer, ProtoData.BuildingClickData buildingClickData, SendParameters sendParameters )
+        void ClickAction_MainBuildingTakeGold ( ClientPeer peer, ProtoData.BuildingClickData buildingClickData, SendParameters sendParameters )
         {
             var sheet = TheLordTable.Instance.BuildingTable.MainBuildingInfoSheet;
             var record = BaseTable.Get ( sheet, "index", buildingClickData.index );
@@ -86,7 +93,7 @@ namespace TheLordServer.Handler
             } );
         }
 
-        private void BuildingBuild ( ClientPeer peer, ProtoData.BuildingClickData buildingClickData, byte operationCode, SendParameters sendParameters )
+        private void ClickAction_BuildingBuild ( ClientPeer peer, ProtoData.BuildingClickData buildingClickData, byte operationCode, SendParameters sendParameters )
         {
             var workBuildingData = MongoHelper.BuildingCollection.GetByIndex ( peer.userData.Id, buildingClickData.index ).GetAwaiter ( );
             workBuildingData.OnCompleted ( ( ) =>
@@ -143,12 +150,40 @@ namespace TheLordServer.Handler
              } );
         }
 
-        private void BuildingLevelUp ( ClientPeer peer, ProtoData.BuildingClickData buildingClickData, SendParameters sendParameters )
+        private void ClickAction_BuildingLevelUp ( ClientPeer peer, ProtoData.BuildingClickData buildingClickData, SendParameters sendParameters )
         {
             throw new NotImplementedException ( );
         }
         
-        private void CharacterHire ( ClientPeer peer, ProtoData.BuildingClickData buildingClickData, SendParameters sendParameters )
+        private void CkickAction_CharacterHire ( ClientPeer peer, ProtoData.BuildingClickData buildingClickData, SendParameters sendParameters )
+        {
+            throw new NotImplementedException ( );
+        }
+
+
+        void OnBuildingConfirmReceived ( ClientPeer peer, OperationRequest operationRequest, SendParameters sendParameters )
+        {
+            var buildingConfirmData = BinSerializer.ConvertData<ProtoData.BuildingConfirmData> ( operationRequest.Parameters );
+            switch ( (ConfirmAction)buildingConfirmData.confirmAction )
+            {
+                case ConfirmAction.Build:
+                    ConfirmAction_Build ( );
+                    break;
+                case ConfirmAction.LevelUp:
+                    ConfirmAction_LevelUp ( );
+                    break;
+                default:
+                    Failed ( peer, sendParameters );
+                    return;
+            }
+        }
+
+        private void ConfirmAction_LevelUp ( )
+        {
+            throw new NotImplementedException ( );
+        }
+
+        private void ConfirmAction_Build ( )
         {
             throw new NotImplementedException ( );
         }
