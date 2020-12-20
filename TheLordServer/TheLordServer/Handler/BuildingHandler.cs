@@ -108,14 +108,14 @@ namespace TheLordServer.Handler
             var record = BaseTable.Get ( sheet, "index", index );
 
             int unitCreate = (int)record["unitCreate"];
-            int second = ( buildingData.LV + 1 ) * (int)record["buildTime"];
 
-            if ( buildingData == null )
+            if (buildingData == null)
             {
-                buildingData = new BuildingData ( peer.Id );
+                buildingData = new BuildingData(peer.Id);
                 buildingData.Index = index;
                 buildingData.LV = 0;
                 buildingData.CharactertData.Index = unitCreate;
+                peer.userAgent.BuildingDataList.Add(buildingData);
             }
 
             if ( buildingData.WorkTime.Ticks > 0 )
@@ -125,6 +125,7 @@ namespace TheLordServer.Handler
             }
             else
             {
+                int second = (buildingData.LV + 1) * (int)record["buildTime"];
                 buildingData.WorkTime = DateTime.Now + new TimeSpan ( 0, 0, second );
 
                 var packet = new ProtoData.BuildingClickData ( );
@@ -149,7 +150,6 @@ namespace TheLordServer.Handler
             var record = BaseTable.Get(sheet, "index", index);
 
             int unitCreate = (int)record["unitCreate"];
-            int second = (buildingData.LV + 1) * (int)record["buildTime"];
 
             if (buildingData == null)
             {
@@ -165,10 +165,13 @@ namespace TheLordServer.Handler
                 }
                 else
                 {
+                    int second = (buildingData.LV + 1) * (int)record["buildTime"];
                     buildingData.WorkTime = DateTime.Now + new TimeSpan(0, 0, second);
-                    ProtoData.BuildingData packet = new ProtoData.BuildingData();
-                    packet.index = buildingClickData.index;
-                    packet.tick = buildingData.WorkTime.Ticks;
+
+                    var packet = new ProtoData.BuildingClickData();
+                    packet.index = index;
+                    packet.clickAction = buildingClickData.clickAction;
+                    packet.value = buildingData.WorkTime.Ticks;
 
                     response.Parameters = BinSerializer.ConvertPacket(packet);
                     response.ReturnCode = (short)ReturnCode.Success;
