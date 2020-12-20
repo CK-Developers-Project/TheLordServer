@@ -301,6 +301,7 @@ namespace TheLordServer.Handler
                 else
                 {
                     // 시간 예외처리
+                    BuildingEvent.OnUpdateBuilding ( peer, index );
                     response.ReturnCode = (short)ReturnCode.Failed;
                 }
             }
@@ -333,6 +334,7 @@ namespace TheLordServer.Handler
                 else
                 {
                     // 시간 예외처리
+                    BuildingEvent.OnUpdateBuilding ( peer, index );
                     response.ReturnCode = (short)ReturnCode.Failed;
                 }
             }

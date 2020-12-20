@@ -99,7 +99,7 @@ namespace TheLordServer.Handler
                 ProtoData.DBLoadData.BuildingData bd = new ProtoData.DBLoadData.BuildingData ( );
                 bd.index = data.Index;
                 bd.LV = data.LV;
-                bd.tick = data.WorkTime.ToString ( );
+                bd.tick = GameUtility.DateTime2String ( data.WorkTime );
                 DBLoadData.buildingDataList.Add ( bd );
             }
             return BinSerializer.ConvertPacket ( DBLoadData );

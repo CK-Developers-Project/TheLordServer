@@ -11,7 +11,8 @@ namespace TheLordServer.Event
     {
         public static void OnUpdateBuilding(ClientPeer peer, int index)
         {
-            if(peer.userAgent.UserData == null)
+            TheLordServer.Log.Info ( "[OnUpdateBuilding]" );
+            if (peer.userAgent.UserData == null)
             {
                 // 로그인 씬으로
                 return;
@@ -23,7 +24,7 @@ namespace TheLordServer.Event
             var packet = new ProtoData.BuildingData ( );
             packet.index = index;
             packet.LV = buildingData.LV;
-            packet.tick = buildingData.WorkTime.ToString();
+            packet.tick = GameUtility.DateTime2String ( buildingData.WorkTime );
             packet.amount = buildingData.CharactertData.Amount;
             data.Parameters = BinSerializer.ConvertPacket ( packet );
             peer.SendEvent ( data, new SendParameters ( ) );

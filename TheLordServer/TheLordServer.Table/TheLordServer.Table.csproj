@@ -70,6 +70,7 @@
     <Compile Include="Structure\NetStructure.cs" />
     <Compile Include="Util\BinSerializer.cs" />
     <Compile Include="Util\DictionaryTool.cs" />
+    <Compile Include="Util\GameUtility.cs" />
     <Compile Include="Util\Singleton.cs" />
   </ItemGroup>
   <ItemGroup>
