@@ -27,7 +27,7 @@ namespace TheLordServer
         // PeerBase를 사용하여 클라이언트와의 링크를 나타내면 Photon이 이러한 링크를 관리합니다
         protected override PeerBase CreatePeer ( InitRequest initRequest )
         {
-            Log.Info ( "클라이언트 연결이 시작되었습니다" );
+            Log.InfoFormat ( "[{0}] 클라이언트 연결이 시작되었습니다", DateTime.Now );
             ClientPeer peer = new ClientPeer(initRequest);
             peerList.Add(peer);
             return peer;

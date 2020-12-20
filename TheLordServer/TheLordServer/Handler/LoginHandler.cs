@@ -44,7 +44,7 @@ namespace TheLordServer.Handler
         /// </summary>
         public async Task<UserData> Create ( UserData data, string id, string password )
         {
-            data = new UserData ( id, password, DateTime.Now );
+            data = new UserData ( id, password, DateTime.UtcNow.ToUniversalTime ( ) );
             TheLordServer.Log.InfoFormat ( " [LoginHandler.Create] - {0} 유저가 생성되었습니다. ", id );
             await MongoHelper.UserCollection.Add ( data );
             return data;

@@ -47,7 +47,8 @@ namespace TheLordServer.Util
             }
             else
             {
-                return dateTime.ToString ( "yyyy/MM/dd hh:mm:ss" );
+                return dateTime.ToUniversalTime ( ).ToString ( "yyyy'-'MM'-'dd'T'HH':'mm':'ss'.'fffK" );
+
             }
         }
 
@@ -56,14 +57,14 @@ namespace TheLordServer.Util
             DateTime dt = default;
             if ( !IsStringNull ( str ) )
             {
-                dt = DateTime.Parse ( str );
+                dt = DateTimeOffset.Parse ( str ).UtcDateTime;
             }
             return dt;
         }
 
         public static bool IsStringNull ( string str )
         {
-            return str.Contains ( "0" );
+            return str.Equals ( "0" );
         }
     }
 }

@@ -141,8 +141,8 @@ namespace TheLordServer.Handler
                 }
                 else
                 {
-                    int second = (buildingData.LV + 1) * (int)record["buildTime"];
-                    buildingData.WorkTime = DateTime.Now + new TimeSpan(0, 0, second);
+                    int second = 300;//(buildingData.LV + 1) * (int)record["buildTime"];
+                    buildingData.WorkTime = DateTime.UtcNow.ToUniversalTime ( ) + new TimeSpan(0, 0, second);
 
                     var packet = new ProtoData.BuildingClickData();
                     packet.index = index;
@@ -234,7 +234,7 @@ namespace TheLordServer.Handler
                     else
                     {
                         int second = (buildingData.LV + 1) * (int)((int)record["buildTime"] * timeRate);
-                        buildingData.WorkTime = DateTime.Now + new TimeSpan(0, 0, second);
+                        buildingData.WorkTime = DateTime.UtcNow.ToUniversalTime ( ) + new TimeSpan(0, 0, second);
 
                         var packet = new ProtoData.BuildingClickData();
                         packet.index = index;
@@ -290,7 +290,7 @@ namespace TheLordServer.Handler
             }
             else
             {
-                TimeSpan targetTime = buildingData.WorkTime - DateTime.Now;
+                TimeSpan targetTime = buildingData.WorkTime - DateTime.UtcNow.ToUniversalTime ( );
                 
                 if ( targetTime.TotalSeconds <= 0)
                 {
@@ -323,7 +323,7 @@ namespace TheLordServer.Handler
             }
             else
             {
-                TimeSpan targetTime = buildingData.WorkTime - DateTime.Now;
+                TimeSpan targetTime = buildingData.WorkTime - DateTime.UtcNow.ToUniversalTime ( );
 
                 if ( targetTime.TotalSeconds <= 0 )
                 {
