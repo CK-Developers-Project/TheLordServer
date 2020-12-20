@@ -115,40 +115,45 @@ namespace TheLordServer.Handler
             {
                 // 돈 부족 예외처리
                 response.ReturnCode = (short)ReturnCode.Failed;
-                peer.SendOperationResponse(response, sendParameters);
-                return;
-            }
-
-            if (buildingData == null)
-            {
-                buildingData = new BuildingData(peer.Id);
-                buildingData.Index = index;
-                buildingData.LV = 0;
-                buildingData.CharactertData.Index = unitCreate;
-                peer.userAgent.BuildingDataList.Add(buildingData);
-            }
-
-            if ( buildingData.WorkTime.Ticks > 0 )
-            {
-                // 이미 업글중 예외 처리
-                response.ReturnCode = (short)ReturnCode.Failed;
+                response.Parameters = BinSerializer.ConvertPacket(buildingClickData);
             }
             else
             {
-                int second = (buildingData.LV + 1) * (int)record["buildTime"];
-                buildingData.WorkTime = DateTime.Now + new TimeSpan ( 0, 0, second );
 
-                var packet = new ProtoData.BuildingClickData ( );
-                packet.index = index;
-                packet.clickAction = buildingClickData.clickAction;
-                packet.value = buildingData.WorkTime.Ticks;
+                if (buildingData == null)
+                {
+                    buildingData = new BuildingData(peer.Id);
+                    buildingData.Index = index;
+                    buildingData.LV = 0;
+                    buildingData.CharactertData.Index = unitCreate;
+                    peer.userAgent.BuildingDataList.Add(buildingData);
+                }
 
-                response.Parameters = BinSerializer.ConvertPacket ( packet );
-                response.ReturnCode = (short)ReturnCode.Success;
+                if (buildingData.WorkTime.Ticks > 0)
+                {
+                    // 이미 업글중 예외 처리
+                    response.ReturnCode = (short)ReturnCode.Failed;
+                    response.Parameters = BinSerializer.ConvertPacket(buildingClickData);
+                }
+                else
+                {
+                    int second = (buildingData.LV + 1) * (int)record["buildTime"];
+                    buildingData.WorkTime = DateTime.Now + new TimeSpan(0, 0, second);
 
-                BigInteger gold = new BigInteger(cost);
-                peer.userAgent.UserAssetData.AddGold(-gold);
+                    var packet = new ProtoData.BuildingClickData();
+                    packet.index = index;
+                    packet.clickAction = buildingClickData.clickAction;
+                    packet.value = buildingData.WorkTime.Ticks;
+
+                    response.Parameters = BinSerializer.ConvertPacket(packet);
+                    response.ReturnCode = (short)ReturnCode.Success;
+
+                    BigInteger gold = new BigInteger(cost);
+                    peer.userAgent.UserAssetData.AddGold(-gold);
+                }
             }
+
+            UserAssetEvent.OnUpdateResource(peer);
             peer.SendOperationResponse(response, sendParameters);
         }
 
@@ -168,6 +173,7 @@ namespace TheLordServer.Handler
             {
                 // 건물이 없음 예외 처리
                 response.ReturnCode = (short)ReturnCode.Failed;
+                response.Parameters = BinSerializer.ConvertPacket(buildingClickData);
             }
             else
             {
@@ -175,6 +181,7 @@ namespace TheLordServer.Handler
                 {
                     // 이미 업글중 예외 처리
                     response.ReturnCode = (short)ReturnCode.Failed;
+                    response.Parameters = BinSerializer.ConvertPacket(buildingClickData);
                 }
                 else
                 {
@@ -188,9 +195,11 @@ namespace TheLordServer.Handler
 
                     response.Parameters = BinSerializer.ConvertPacket(packet);
                     response.ReturnCode = (short)ReturnCode.Success;
-                    peer.SendOperationResponse(response, sendParameters);
                 }
             }
+
+            UserAssetEvent.OnUpdateResource(peer);
+            peer.SendOperationResponse(response, sendParameters);
         }
         
         private void CkickAction_CharacterHire ( ClientPeer peer, ProtoData.BuildingClickData buildingClickData, SendParameters sendParameters )
