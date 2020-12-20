@@ -83,7 +83,7 @@ namespace TheLordServer.Handler
             }
 
             bool bExistMainBuilding = peer.userAgent.BuildingDataList.Exists ( x => x.Index == buildingIndex );
-            if ( bExistMainBuilding )
+            if ( !bExistMainBuilding )
             {
                 var buildingData = new BuildingData ( peer.Id );
                 buildingData.Index = buildingIndex;
@@ -207,11 +207,14 @@ namespace TheLordServer.Handler
                 peer.userAgent.UserData.Info.Nickname = user.nickname;
                 peer.userAgent.UserData.Info.Race = user.race;
 
-                ProtoData.UserData packet = new ProtoData.UserData ( );
-                packet.nickname = peer.userAgent.UserData.Info.Nickname;
-                packet.race = peer.userAgent.UserData.Info.Race;
-                response.Parameters = BinSerializer.ConvertPacket ( packet );
-                peer.SendOperationResponse ( response, sendParameters );
+                MongoHelper.UserCollection.UpdateInfo ( peer.userAgent.UserData ).GetAwaiter ( ).OnCompleted ( ( ) =>
+                    {
+                        ProtoData.UserData packet = new ProtoData.UserData ( );
+                        packet.nickname = peer.userAgent.UserData.Info.Nickname;
+                        packet.race = peer.userAgent.UserData.Info.Race;
+                        response.Parameters = BinSerializer.ConvertPacket ( packet );
+                        peer.SendOperationResponse ( response, sendParameters );
+                    } );
             }
         }
 

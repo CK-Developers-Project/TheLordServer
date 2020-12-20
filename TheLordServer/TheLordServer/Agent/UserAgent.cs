@@ -25,7 +25,7 @@ namespace TheLordServer.Agent
         }
 
 
-        public async Task Save ()
+        public async void Save ()
         {
             try
             {
@@ -33,7 +33,7 @@ namespace TheLordServer.Agent
                 {
                     await MongoHelper.UserAssetCollection.Update ( UserAssetData );
                 }
-
+                
                 if(BuildingDataList != null)
                 {
                     List<Task> workBuildingDataList = new List<Task> ( );

@@ -20,7 +20,7 @@ namespace TheLordServer
         {
             if( userAgent.UserData != null)
             {
-                Task.Run ( userAgent.Save );
+                userAgent.Save ( );
             }
 
             TheLordServer.Log.InfoFormat ( "[{0}]의 연결이 끊겼습니다.", LocalIP );

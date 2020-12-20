@@ -15,12 +15,19 @@ namespace TheLordServer.MongoDB.Model
         {
             try
             {
-                //var dbList = await collection.Find ( Builders<UserAssetData>.Filter.Eq ( "_id", data.Id ) ).ToListAsync ( );
-
-
-                var filter = Builders<UserAssetData>.Filter.Eq ( "_id", data.Id );
-                var update = Builders<UserAssetData>.Update.Set ( ( x ) => x, data );
-                await collection.UpdateOneAsync ( filter, update, new UpdateOptions ( ) { IsUpsert = true } );
+                var dbFilter = Builders<UserAssetData>.Filter.Eq ( "_id", data.Id );
+                var dbList = await collection.Find ( dbFilter ).ToListAsync ( );
+                bool bExist = dbList.Count > 0;
+                if ( bExist )
+                {
+                    var filter = Builders<UserAssetData>.Filter.Eq ( "_id", data.Id );
+                    var update = Builders<UserAssetData>.Update.Set ( ( x ) => x, data );
+                    await collection.UpdateOneAsync ( filter, update, new UpdateOptions ( ) { IsUpsert = true } );
+                }
+                else
+                {
+                    await Add ( data );
+                }
             }
             catch ( MongoException e )
             {
