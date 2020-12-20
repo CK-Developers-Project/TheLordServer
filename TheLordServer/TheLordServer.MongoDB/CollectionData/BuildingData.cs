@@ -22,6 +22,9 @@ namespace TheLordServer.MongoDB.CollectionData
 
         public BuildingData ( ObjectId id ) : base ( id ) 
         {
+            Index = 0;
+            LV = 0;
+            WorkTime = default;
             CharactertData = new CharacterData ( );
         }
     }

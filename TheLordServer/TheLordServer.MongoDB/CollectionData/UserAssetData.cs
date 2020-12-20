@@ -1,4 +1,5 @@
 ﻿using MongoDB.Bson;
+using MongoDB.Bson.Serialization.Attributes;
 
 namespace TheLordServer.MongoDB.CollectionData
 {
@@ -18,19 +19,20 @@ namespace TheLordServer.MongoDB.CollectionData
             }
         }
 
-        public UserResource Resource;
+        public UserResource Resource { get; set; }
 
         public UserAssetData ( ObjectId id ) : base ( id ) 
         {
             Resource = new UserResource ( );
         }
 
-        
+        [BsonIgnore]
         public string Gold {
             get => Resource.Gold;
             set => Resource.Gold = value;
         }
 
+        [BsonIgnore]
         public string Cash {
             get => Resource.Cash;
             set => Resource.Cash = value;
