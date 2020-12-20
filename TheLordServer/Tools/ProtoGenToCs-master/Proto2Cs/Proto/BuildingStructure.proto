@@ -7,6 +7,11 @@ message BuildingClickData {
     optional int32 value = 3;
 }
 
+message BuildingConfirmData {
+    required int32 index = 1;
+    required int32 confirmAction = 2;
+}
+
 message BuildingData {
     required int32 index = 1;
 	optional int32 LV = 2;

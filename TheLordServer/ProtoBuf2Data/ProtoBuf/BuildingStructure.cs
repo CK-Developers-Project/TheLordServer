@@ -42,6 +42,30 @@ namespace ProtoData
       { return global::ProtoBuf.Extensible.GetExtensionObject(ref extensionObject, createIfMissing); }
   }
   
+  [global::System.Serializable, global::ProtoBuf.ProtoContract(Name=@"BuildingConfirmData")]
+  public partial class BuildingConfirmData : global::ProtoBuf.IExtensible
+  {
+    public BuildingConfirmData() {}
+    
+    private int _index;
+    [global::ProtoBuf.ProtoMember(1, IsRequired = true, Name=@"index", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
+    public int index
+    {
+      get { return _index; }
+      set { _index = value; }
+    }
+    private int _confirmAction;
+    [global::ProtoBuf.ProtoMember(2, IsRequired = true, Name=@"confirmAction", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
+    public int confirmAction
+    {
+      get { return _confirmAction; }
+      set { _confirmAction = value; }
+    }
+    private global::ProtoBuf.IExtension extensionObject;
+    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
+      { return global::ProtoBuf.Extensible.GetExtensionObject(ref extensionObject, createIfMissing); }
+  }
+  
   [global::System.Serializable, global::ProtoBuf.ProtoContract(Name=@"BuildingData")]
   public partial class BuildingData : global::ProtoBuf.IExtensible
   {
