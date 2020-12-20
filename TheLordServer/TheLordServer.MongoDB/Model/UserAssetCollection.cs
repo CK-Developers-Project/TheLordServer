@@ -22,8 +22,9 @@ namespace TheLordServer.MongoDB.Model
                 {
                     var filter = Builders<UserAssetData>.Filter.Eq ( "_id", data.Id );
                     var update = Builders<UserAssetData>.Update
-                                .SetOnInsert ( ( x ) => x.Resource, data.Resource );
-                    await collection.UpdateOneAsync ( filter, update );
+                                .Set ( ( x ) => x.Key, data.Key )
+                                .Set ( ( x ) => x.Resource, data.Resource );
+                    await collection.UpdateOneAsync ( filter, update, new UpdateOptions { IsUpsert = true } );
                 }
                 else
                 {

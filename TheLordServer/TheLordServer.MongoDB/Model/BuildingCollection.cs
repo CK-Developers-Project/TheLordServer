@@ -23,11 +23,12 @@ namespace TheLordServer.MongoDB.Model
                 {
                     var filter = Builders<BuildingData>.Filter.Eq ( "_id", data.Id );
                     var update = Builders<BuildingData>.Update
-                                .SetOnInsert ( ( x ) => x.Index, data.Index )
-                                .SetOnInsert ( ( x ) => x.LV, data.LV )
-                                .SetOnInsert ( ( x ) => x.WorkTime, data.WorkTime )
-                                .SetOnInsert ( ( x ) => x.CharactertData, data.CharactertData );
-                    await collection.UpdateOneAsync ( filter, update );
+                                .Set ( ( x ) => x.Key, data.Key )
+                                .Set ( ( x ) => x.Index, data.Index )
+                                .Set ( ( x ) => x.LV, data.LV )
+                                .Set ( ( x ) => x.WorkTime, data.WorkTime )
+                                .Set ( ( x ) => x.CharactertData, data.CharactertData );
+                    await collection.UpdateOneAsync ( filter, update, new UpdateOptions { IsUpsert = true } );
                 }
                 else
                 {

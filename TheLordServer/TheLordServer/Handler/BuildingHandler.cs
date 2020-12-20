@@ -137,7 +137,7 @@ namespace TheLordServer.Handler
                     packet.clickAction = buildingClickData.clickAction;
                     packet.value = buildingData.WorkTime.Ticks;
 
-                    response.ReturnCode = (short)ReturnCode.Failed;
+                    response.ReturnCode = (short)ReturnCode.Success;
                     response.Parameters = BinSerializer.ConvertPacket(packet);
                 }
                 else
@@ -190,7 +190,7 @@ namespace TheLordServer.Handler
                     packet.clickAction = buildingClickData.clickAction;
                     packet.value = buildingData.WorkTime.Ticks;
 
-                    response.ReturnCode = (short)ReturnCode.Failed;
+                    response.ReturnCode = (short)ReturnCode.Success;
                     response.Parameters = BinSerializer.ConvertPacket(packet);
                 }
                 else
@@ -248,7 +248,9 @@ namespace TheLordServer.Handler
             }
             else
             {
-                if (buildingData.WorkTime.Ticks <= 0)
+                TimeSpan targetTime = buildingData.WorkTime - DateTime.Now;
+                
+                if ( targetTime.TotalSeconds <= 0)
                 {
                     buildingData.LV = 1;
                     buildingData.WorkTime = default;
@@ -278,7 +280,9 @@ namespace TheLordServer.Handler
             }
             else
             {
-                if (buildingData.WorkTime.Ticks <= 0)
+                TimeSpan targetTime = buildingData.WorkTime - DateTime.Now;
+
+                if ( targetTime.TotalSeconds <= 0 )
                 {
                     buildingData.LV++;
                     buildingData.WorkTime = default;
