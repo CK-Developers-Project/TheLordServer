@@ -119,7 +119,6 @@ namespace TheLordServer.Handler
             }
             else
             {
-
                 if (buildingData == null)
                 {
                     buildingData = new BuildingData(peer.Id);
@@ -170,41 +169,84 @@ namespace TheLordServer.Handler
             var response = new OperationResponse(operationCode);
 
             var sheet = TheLordTable.Instance.BuildingTable.BuildingInfoSheet;
+            var costSheet = TheLordTable.Instance.BuildingTable.BuildCostSheet;
             var record = BaseTable.Get(sheet, "index", index);
 
             int unitCreate = (int)record["unitCreate"];
 
             if (buildingData == null)
             {
-                // 건물이 없음 예외 처리
+                // 건물 없음 예외처리
                 response.ReturnCode = (short)ReturnCode.Failed;
                 response.Parameters = BinSerializer.ConvertPacket(buildingClickData);
             }
             else
             {
-                if (buildingData.WorkTime.Ticks > 0)
-                {
-                    // 이미 업글중 예외 처리
-                    var packet = new ProtoData.BuildingClickData();
-                    packet.index = index;
-                    packet.clickAction = buildingClickData.clickAction;
-                    packet.value = buildingData.WorkTime.Ticks;
+                int buildingIndex = 0;
 
-                    response.ReturnCode = (short)ReturnCode.Success;
-                    response.Parameters = BinSerializer.ConvertPacket(packet);
+                switch ((Race)peer.userAgent.UserData.Info.Race)
+                {
+                    case Race.Elf:
+                        buildingIndex = 1;
+                        break;
+                    case Race.Human:
+                        buildingIndex = 101;
+                        break;
+                    case Race.Undead:
+                        buildingIndex = 201;
+                        break;
+                }
+
+                bool isMain = buildingIndex == buildingData.Index;
+                float costRate = 0;
+                float timeRate = 0; 
+
+                foreach (var st in costSheet)
+                {
+                    if ((int)st["LV"] > buildingData.LV)
+                    {
+                        break;
+                    }
+                    costRate = isMain ? (float)st["mainBuildingRate"] : (float)st["NormalRate"];
+                    timeRate = (float)st["buildTimeRate"];
+                }
+                int cost = (int)(buildingData.LV * (int)record["nextLV"] * costRate);
+
+                if (peer.userAgent.UserAssetData.GetGold() < cost)
+                {
+                    // 돈 부족 예외처리
+                    response.ReturnCode = (short)ReturnCode.Failed;
+                    response.Parameters = BinSerializer.ConvertPacket(buildingClickData);
                 }
                 else
                 {
-                    int second = (buildingData.LV + 1) * (int)record["buildTime"];
-                    buildingData.WorkTime = DateTime.Now + new TimeSpan(0, 0, second);
+                    if (buildingData.WorkTime.Ticks > 0)
+                    {
+                        // 이미 업글중 예외 처리
+                        var packet = new ProtoData.BuildingClickData();
+                        packet.index = index;
+                        packet.clickAction = buildingClickData.clickAction;
+                        packet.value = buildingData.WorkTime.Ticks;
 
-                    var packet = new ProtoData.BuildingClickData();
-                    packet.index = index;
-                    packet.clickAction = buildingClickData.clickAction;
-                    packet.value = buildingData.WorkTime.Ticks;
+                        response.ReturnCode = (short)ReturnCode.Success;
+                        response.Parameters = BinSerializer.ConvertPacket(packet);
+                    }
+                    else
+                    {
+                        int second = (buildingData.LV + 1) * (int)((int)record["buildTime"] * timeRate);
+                        buildingData.WorkTime = DateTime.Now + new TimeSpan(0, 0, second);
 
-                    response.Parameters = BinSerializer.ConvertPacket(packet);
-                    response.ReturnCode = (short)ReturnCode.Success;
+                        var packet = new ProtoData.BuildingClickData();
+                        packet.index = index;
+                        packet.clickAction = buildingClickData.clickAction;
+                        packet.value = buildingData.WorkTime.Ticks;
+
+                        response.Parameters = BinSerializer.ConvertPacket(packet);
+                        response.ReturnCode = (short)ReturnCode.Success;
+
+                        BigInteger gold = new BigInteger(cost);
+                        peer.userAgent.UserAssetData.AddGold(-gold);
+                    }
                 }
             }
 
