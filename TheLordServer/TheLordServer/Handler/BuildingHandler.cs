@@ -102,6 +102,7 @@ namespace TheLordServer.Handler
             int index = buildingClickData.index;
 
             var buildingData = peer.userAgent.BuildingDataList.Find ( x => x.Index == index );
+            var response = new OperationResponse(operationCode);
 
             var sheet = TheLordTable.Instance.BuildingTable.BuildingInfoSheet;
             var record = BaseTable.Get ( sheet, "index", index );
@@ -120,16 +121,17 @@ namespace TheLordServer.Handler
             if ( buildingData.WorkTime.Ticks > 0 )
             {
                 // 이미 업글중 예외 처리
+                response.ReturnCode = (short)ReturnCode.Failed;
             }
             else
             {
                 buildingData.WorkTime = DateTime.Now + new TimeSpan ( 0, 0, second );
-                OperationResponse response = new OperationResponse ( operationCode );
                 ProtoData.BuildingData packet = new ProtoData.BuildingData ( );
                 packet.index = buildingClickData.index;
                 packet.tick = buildingData.WorkTime.Ticks;
 
                 response.Parameters = BinSerializer.ConvertPacket ( packet );
+                response.ReturnCode = (short)ReturnCode.Success;
                 peer.SendOperationResponse ( response, sendParameters );
             }
         }
