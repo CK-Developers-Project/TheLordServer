@@ -132,8 +132,13 @@ namespace TheLordServer.Handler
                 if (buildingData.WorkTime.Ticks > 0)
                 {
                     // 이미 업글중 예외 처리
+                    var packet = new ProtoData.BuildingClickData();
+                    packet.index = index;
+                    packet.clickAction = buildingClickData.clickAction;
+                    packet.value = buildingData.WorkTime.Ticks;
+
                     response.ReturnCode = (short)ReturnCode.Failed;
-                    response.Parameters = BinSerializer.ConvertPacket(buildingClickData);
+                    response.Parameters = BinSerializer.ConvertPacket(packet);
                 }
                 else
                 {
@@ -180,8 +185,13 @@ namespace TheLordServer.Handler
                 if (buildingData.WorkTime.Ticks > 0)
                 {
                     // 이미 업글중 예외 처리
+                    var packet = new ProtoData.BuildingClickData();
+                    packet.index = index;
+                    packet.clickAction = buildingClickData.clickAction;
+                    packet.value = buildingData.WorkTime.Ticks;
+
                     response.ReturnCode = (short)ReturnCode.Failed;
-                    response.Parameters = BinSerializer.ConvertPacket(buildingClickData);
+                    response.Parameters = BinSerializer.ConvertPacket(packet);
                 }
                 else
                 {
