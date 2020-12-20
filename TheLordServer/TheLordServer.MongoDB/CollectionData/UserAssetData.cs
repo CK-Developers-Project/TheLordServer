@@ -19,10 +19,12 @@ namespace TheLordServer.MongoDB.CollectionData
             }
         }
 
+        public ObjectId Key { get; set; }
         public UserResource Resource { get; set; }
 
-        public UserAssetData ( ObjectId id ) : base ( id ) 
+        public UserAssetData ( ObjectId key ) : base ( ) 
         {
+            Key = key;
             Resource = new UserResource ( );
         }
 

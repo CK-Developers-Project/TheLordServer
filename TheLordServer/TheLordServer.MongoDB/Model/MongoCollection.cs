@@ -27,11 +27,11 @@ namespace TheLordServer.MongoDB.Model
             collection.UpdateOne ( filter, Builders<T>.Update.AddToSet ( "WorkTime", new System.DateTime() ) );
         }*/
 
-        public async Task<T> Get (ObjectId id)
+        public async Task<T> Get (ObjectId key)
         {
             try
             {
-                var data = await collection.FindAsync(Builders<T>.Filter.Eq("_id", id));
+                var data = await collection.FindAsync(Builders<T>.Filter.Eq("Key", key));
                 var datas = data.ToList();
                 return datas.Count > 0 ? datas[0] : default ( T );
             }
@@ -42,11 +42,11 @@ namespace TheLordServer.MongoDB.Model
             }
         }
 
-        public async Task<List<T>> GetAll (ObjectId id)
+        public async Task<List<T>> GetAll (ObjectId key)
         {
             try
             {
-                var data = await collection.FindAsync ( Builders<T>.Filter.Eq ( "_id", id ) );
+                var data = await collection.FindAsync ( Builders<T>.Filter.Eq ( "Key", key ) );
                 var datas = data.ToList ( );
                 return datas.Count > 0 ? datas : null;
             }

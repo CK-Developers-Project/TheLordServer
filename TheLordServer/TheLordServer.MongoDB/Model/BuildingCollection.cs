@@ -16,8 +16,7 @@ namespace TheLordServer.MongoDB.Model
         {
             try
             {
-                var dbFilter = Builders<BuildingData>.Filter.Eq ( "_id", data.Id ) &
-                             Builders<BuildingData>.Filter.Eq ( "Index", data.Index );
+                var dbFilter = Builders<BuildingData>.Filter.Eq ( "_id", data.Id );
                 var dbList = await collection.Find ( dbFilter ).ToListAsync ( );
                 bool bExist = dbList.Count > 0;
                 if ( bExist )
@@ -45,8 +44,7 @@ namespace TheLordServer.MongoDB.Model
         {
             try
             {
-                var filter = Builders<BuildingData>.Filter.Eq ( "_id", data.Id ) &
-                             Builders<BuildingData>.Filter.Eq( "Index", data.Index);
+                var filter = Builders<BuildingData>.Filter.Eq ( "_id", data.Id );
                 var update = Builders<BuildingData>.Update.SetOnInsert ( ( x ) => x.LV, data.LV );
                 await collection.UpdateOneAsync ( filter, update );
             }
@@ -60,8 +58,7 @@ namespace TheLordServer.MongoDB.Model
         {
             try
             {
-                var filter = Builders<BuildingData>.Filter.Eq ( "_id", data.Id ) &
-                             Builders<BuildingData>.Filter.Eq ( "WorkTime", data.WorkTime );
+                var filter = Builders<BuildingData>.Filter.Eq ( "_id", data.Id );
                 var update = Builders<BuildingData>.Update.SetOnInsert ( ( x ) => x.WorkTime, data.WorkTime );
 
                 await collection.UpdateOneAsync ( filter, update );
@@ -76,8 +73,7 @@ namespace TheLordServer.MongoDB.Model
         {
             try
             {
-                var filter = Builders<BuildingData>.Filter.Eq ( "_id", data.Id ) &
-                             Builders<BuildingData>.Filter.Eq ( "CharactertData", data.CharactertData );
+                var filter = Builders<BuildingData>.Filter.Eq ( "_id", data.Id );
                 var update = Builders<BuildingData>.Update.SetOnInsert ( ( x ) => x.CharactertData, data.CharactertData );
 
                 await collection.UpdateOneAsync ( filter, update );
@@ -88,11 +84,11 @@ namespace TheLordServer.MongoDB.Model
             }
         }
 
-        public async Task<BuildingData> GetByIndex (ObjectId id, int index)
+        public async Task<BuildingData> GetByIndex (ObjectId key, int index)
         {
             try
             {
-                var filter = Builders<BuildingData>.Filter.Eq ( "_id", id ) &
+                var filter = Builders<BuildingData>.Filter.Eq ( "Key", key ) &
                              Builders<BuildingData>.Filter.Eq ( "Index", index );
                 var data = await collection.FindAsync ( filter );
                 var datas = data.ToList ( );

@@ -12,10 +12,5 @@ namespace TheLordServer.MongoDB.CollectionData
         {
             Id = ObjectId.GenerateNewId ( );
         }
-
-        public BaseData ( ObjectId id )
-        {
-            Id = id;
-        }
     }
 }

@@ -15,13 +15,15 @@ namespace TheLordServer.MongoDB.CollectionData
             }
         }
 
+        public ObjectId Key { get; set; }
         public int Index { get; set; }
         public int LV { get; set; } 
         public DateTime WorkTime { get; set; } 
         public CharacterData CharactertData { get; set; } 
 
-        public BuildingData ( ObjectId id ) : base ( id ) 
+        public BuildingData ( ObjectId key ) : base ( ) 
         {
+            Key = key;
             Index = 0;
             LV = 0;
             WorkTime = default;

@@ -40,8 +40,7 @@ namespace TheLordServer.MongoDB.Model
         {
             try
             {
-                var filter = Builders<UserAssetData>.Filter.Eq ( "_id", data.Id ) &
-                             Builders<UserAssetData>.Filter.Eq ( "Resource", data.Resource );
+                var filter = Builders<UserAssetData>.Filter.Eq ( "_id", data.Id );
                 var update = Builders<UserAssetData>.Update.SetOnInsert ( ( x ) => x.Resource, data.Resource );
                                                  
                 await collection.UpdateOneAsync ( filter, update );
