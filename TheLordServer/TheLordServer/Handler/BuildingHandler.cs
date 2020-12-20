@@ -57,7 +57,7 @@ namespace TheLordServer.Handler
                     ClickAction_BuildingBuild ( peer, buildingClickData, operationRequest.OperationCode, sendParameters );
                     break;
                 case ClickAction.BuildingLevelUp:
-                    ClickAction_BuildingLevelUp ( peer, buildingClickData, sendParameters );
+                    ClickAction_BuildingLevelUp ( peer, buildingClickData, operationRequest.OperationCode, sendParameters);
                     break;
                 case ClickAction.CharacterHire:
                     CkickAction_CharacterHire ( peer, buildingClickData, sendParameters );
@@ -136,9 +136,43 @@ namespace TheLordServer.Handler
             }
         }
 
-        private void ClickAction_BuildingLevelUp ( ClientPeer peer, ProtoData.BuildingClickData buildingClickData, SendParameters sendParameters )
+        private void ClickAction_BuildingLevelUp ( ClientPeer peer, ProtoData.BuildingClickData buildingClickData, byte operationCode, SendParameters sendParameters )
         {
-            throw new NotImplementedException ( );
+            int index = buildingClickData.index;
+
+            var buildingData = peer.userAgent.BuildingDataList.Find(x => x.Index == index);
+            var response = new OperationResponse(operationCode);
+
+            var sheet = TheLordTable.Instance.BuildingTable.BuildingInfoSheet;
+            var record = BaseTable.Get(sheet, "index", index);
+
+            int unitCreate = (int)record["unitCreate"];
+            int second = (buildingData.LV + 1) * (int)record["buildTime"];
+
+            if (buildingData == null)
+            {
+                // 건물이 없음 예외 처리
+                response.ReturnCode = (short)ReturnCode.Failed;
+            }
+            else
+            {
+                if (buildingData.WorkTime.Ticks > 0)
+                {
+                    // 이미 업글중 예외 처리
+                    response.ReturnCode = (short)ReturnCode.Failed;
+                }
+                else
+                {
+                    buildingData.WorkTime = DateTime.Now + new TimeSpan(0, 0, second);
+                    ProtoData.BuildingData packet = new ProtoData.BuildingData();
+                    packet.index = buildingClickData.index;
+                    packet.tick = buildingData.WorkTime.Ticks;
+
+                    response.Parameters = BinSerializer.ConvertPacket(packet);
+                    response.ReturnCode = (short)ReturnCode.Success;
+                    peer.SendOperationResponse(response, sendParameters);
+                }
+            }
         }
         
         private void CkickAction_CharacterHire ( ClientPeer peer, ProtoData.BuildingClickData buildingClickData, SendParameters sendParameters )
@@ -173,6 +207,7 @@ namespace TheLordServer.Handler
             if (buildingData == null)
             {
                 // 건물이 없음 예외처리
+                response.ReturnCode = (short)ReturnCode.Failed;
             }
             else
             {
@@ -185,6 +220,7 @@ namespace TheLordServer.Handler
                 else
                 {
                     // 시간 예외처리
+                    response.ReturnCode = (short)ReturnCode.Failed;
                 }
             }
 
@@ -200,6 +236,7 @@ namespace TheLordServer.Handler
             if (buildingData == null)
             {
                 // 건물이 없음 예외처리
+                response.ReturnCode = (short)ReturnCode.Failed;
             }
             else
             {
@@ -212,6 +249,7 @@ namespace TheLordServer.Handler
                 else
                 {
                     // 시간 예외처리
+                    response.ReturnCode = (short)ReturnCode.Failed;
                 }
             }
 
