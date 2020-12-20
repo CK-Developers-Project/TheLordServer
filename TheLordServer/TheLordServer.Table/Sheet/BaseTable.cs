@@ -43,6 +43,15 @@ namespace TheLordServer.Table
             return result;
         }
 
+        public static List<T> ListParsing<T> ( List<object> record )
+        {
+            List<T> ability = new List<T> ( );
+            foreach ( T i in record )
+            {
+                ability.Add ( i );
+            }
+            return ability;
+        }
 
         Dictionary<string, List<Dictionary<string, object>>> Read (string file)
         {

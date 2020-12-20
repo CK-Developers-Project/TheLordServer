@@ -44,6 +44,22 @@ namespace TheLordServer.MongoDB.Model
             }
         }
 
+        public async Task UpdateCharactertData(BuildingData data)
+        {
+            try
+            {
+                var filter = Builders<BuildingData>.Filter.Eq ( "_id", data.Id ) &
+                             Builders<BuildingData>.Filter.Eq ( "CharactertData", data.CharactertData );
+                var update = Builders<BuildingData>.Update.Set ( ( x ) => x.CharactertData, data.CharactertData );
+
+                await collection.UpdateOneAsync ( filter, update, new UpdateOptions ( ) { IsUpsert = true } );
+            }
+            catch(MongoException e)
+            {
+                MongoHelper.Log.ErrorFormat ( "[{0}.UpdateCharactertData] Error - {1}", typeof ( BuildingData ).Name, e.Message );
+            }
+        }
+
         public async Task<BuildingData> GetByIndex (ObjectId id, int index)
         {
             try

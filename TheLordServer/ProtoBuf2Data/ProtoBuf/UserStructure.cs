@@ -125,6 +125,14 @@ namespace ProtoData
       get { return _tick; }
       set { _tick = value; }
     }
+    private int _amount = default(int);
+    [global::ProtoBuf.ProtoMember(4, IsRequired = false, Name=@"amount", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
+    [global::System.ComponentModel.DefaultValue(default(int))]
+    public int amount
+    {
+      get { return _amount; }
+      set { _amount = value; }
+    }
     private global::ProtoBuf.IExtension extensionObject;
     global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
       { return global::ProtoBuf.Extensible.GetExtensionObject(ref extensionObject, createIfMissing); }
