@@ -70,84 +70,68 @@ namespace TheLordServer.Handler
 
         void ClickAction_MainBuildingTakeGold ( ClientPeer peer, ProtoData.BuildingClickData buildingClickData, SendParameters sendParameters )
         {
+            if(peer.userAgent.UserData == null)
+            {
+                Failed ( peer, sendParameters );
+                return;
+            }
+
+            int index = buildingClickData.index;
             var sheet = TheLordTable.Instance.BuildingTable.MainBuildingInfoSheet;
-            var record = BaseTable.Get ( sheet, "index", buildingClickData.index );
+            var record = BaseTable.Get ( sheet, "index", index );
             if ( null == record )
             {
                 Failed ( peer, sendParameters );
                 return;
             }
 
-            var workBuildingData = MongoHelper.BuildingCollection.GetByIndex ( peer.userData.Id, buildingClickData.index ).GetAwaiter ( );
-            workBuildingData.OnCompleted ( ( ) =>
+            var buildingData = peer.userAgent.BuildingDataList.Find ( x => x.Index == index );
+            if ( buildingData == null )
             {
-                var buildingData = workBuildingData.GetResult ( );
-                if(buildingData == null)
-                {
-                    Failed ( peer, sendParameters );
-                    return;
-                }
-                int increase = buildingData.LV * (int)record["nextLV"];
-                BigInteger gold = new BigInteger ( increase * buildingClickData.value );
-                peer.userAgent.gold += gold;
-            } );
+                Failed ( peer, sendParameters );
+                return;
+            }
+
+            int increase = buildingData.LV * (int)record["nextLV"];
+            BigInteger gold = new BigInteger ( increase * buildingClickData.value );
+            peer.userAgent.UserAssetData.AddGold ( gold );
         }
 
         private void ClickAction_BuildingBuild ( ClientPeer peer, ProtoData.BuildingClickData buildingClickData, byte operationCode, SendParameters sendParameters )
         {
-            var workBuildingData = MongoHelper.BuildingCollection.GetByIndex ( peer.userData.Id, buildingClickData.index ).GetAwaiter ( );
-            workBuildingData.OnCompleted ( ( ) =>
-             {
-                 var buildingData = workBuildingData.GetResult ( );
+            int index = buildingClickData.index;
 
-                 var sheet = TheLordTable.Instance.BuildingTable.BuildingInfoSheet;
-                 var record = BaseTable.Get ( sheet, "index", buildingClickData.index );
+            var buildingData = peer.userAgent.BuildingDataList.Find ( x => x.Index == index );
 
-                 int unitCreate = (int)record["unitCreate"];
-                 int second = ( buildingData.LV + 1 ) * (int)record["buildTime"];
+            var sheet = TheLordTable.Instance.BuildingTable.BuildingInfoSheet;
+            var record = BaseTable.Get ( sheet, "index", index );
 
-                 bool bCreate = buildingData == null;
+            int unitCreate = (int)record["unitCreate"];
+            int second = ( buildingData.LV + 1 ) * (int)record["buildTime"];
 
-                 if ( bCreate )
-                 {
-                     buildingData = new BuildingData ( peer.userData.Id );
-                     buildingData.Index = buildingClickData.index;
-                     buildingData.LV = 0;
-                     buildingData.CharactertData.Index = unitCreate;
-                 }
+            if ( buildingData == null )
+            {
+                buildingData = new BuildingData ( peer.Id );
+                buildingData.Index = buildingClickData.index;
+                buildingData.LV = 0;
+                buildingData.CharactertData.Index = unitCreate;
+            }
 
-                 if ( buildingData.WorkTime.Ticks > 0 )
-                 {
-                     // TODO
-                     // 이미 업글중임
-                 }
-                 else
-                 {
-                     buildingData.WorkTime = DateTime.Now + new TimeSpan ( 0, 0, second );
+            if ( buildingData.WorkTime.Ticks > 0 )
+            {
+                // 이미 업글중 예외 처리
+            }
+            else
+            {
+                buildingData.WorkTime = DateTime.Now + new TimeSpan ( 0, 0, second );
+                OperationResponse response = new OperationResponse ( operationCode );
+                ProtoData.BuildingData packet = new ProtoData.BuildingData ( );
+                packet.index = buildingClickData.index;
+                packet.tick = buildingData.WorkTime.Ticks;
 
-                     Action action = ( ) =>
-                     {
-                         OperationResponse response = new OperationResponse ( operationCode );
-                         ProtoData.BuildingData packet = new ProtoData.BuildingData ( );
-                         packet.index = buildingClickData.index;
-                         packet.tick = buildingData.WorkTime.Ticks;
-
-                         response.Parameters = BinSerializer.ConvertPacket ( packet );
-                         peer.SendOperationResponse ( response, sendParameters );
-                     };
-
-                     if ( bCreate )
-                     {
-                         var workAdd = MongoHelper.BuildingCollection.Add ( buildingData ).GetAwaiter ( );
-                         workAdd.OnCompleted ( action );
-                     }
-                     else
-                     {
-                         var workUpdate = MongoHelper.BuildingCollection.UpdateWorkTime ( buildingData ).GetAwaiter ( );
-                         workUpdate.OnCompleted ( action );
-                     }
-                 }
-             } );
+                response.Parameters = BinSerializer.ConvertPacket ( packet );
+                peer.SendOperationResponse ( response, sendParameters );
+            }
         }
 
         private void ClickAction_BuildingLevelUp ( ClientPeer peer, ProtoData.BuildingClickData buildingClickData, SendParameters sendParameters )

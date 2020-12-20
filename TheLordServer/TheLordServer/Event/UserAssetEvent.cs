@@ -13,23 +13,18 @@ namespace TheLordServer.Event
     {
         public static void OnUpdateResource(ClientPeer peer)
         {
-            var workUserAsset = MongoHelper.UserAssetCollection.Get ( peer.userData.Id ).GetAwaiter ( );
-            workUserAsset.OnCompleted ( ( ) =>
-             {
-                 var userAsset = workUserAsset.GetResult ( );
+            if ( peer.userAgent.UserData == null )
+            {
+                // 로그인 씬으로
+                return;
+            }
 
-                 if ( userAsset == null )
-                 {
-                     return;
-                 }
-
-                 EventData data = new EventData ( (byte)EventCode.UpdateResource );
-                 ProtoData.ResourceData packet = new ProtoData.ResourceData ( );
-                 packet.gold = peer.userAgent.gold.ToString();
-                 packet.cash = userAsset.Cash;
-                 data.Parameters = BinSerializer.ConvertPacket ( packet );
-                 peer.SendEvent ( data, new SendParameters ( ) );
-             } );
+            EventData data = new EventData ( (byte)EventCode.UpdateResource );
+            ProtoData.ResourceData packet = new ProtoData.ResourceData ( );
+            packet.gold = peer.userAgent.UserAssetData.Gold;
+            packet.cash = peer.userAgent.UserAssetData.Cash;
+            data.Parameters = BinSerializer.ConvertPacket ( packet );
+            peer.SendEvent ( data, new SendParameters ( ) );
         }
     }
 }

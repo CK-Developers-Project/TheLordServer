@@ -1,39 +1,26 @@
 ﻿using Photon.SocketServer;
 using PhotonHostRuntimeInterfaces;
+using MongoDB.Bson;
+using System.Threading.Tasks;
 
 namespace TheLordServer
 {
     using Table.Structure;
-    using MongoDB.CollectionData;
-    using MongoDB.Model;
     using Agent;
 
     public class ClientPeer : Photon.SocketServer.ClientPeer
     {
-        public UserData userData {get; set;}
         public UserAgent userAgent = new UserAgent();
+        public ObjectId Id { get => userAgent.Id; }
 
         public ClientPeer(InitRequest initRequest) : base(initRequest) { }
+        
 
         protected override void OnDisconnect ( DisconnectReason reasonCode, string reasonDetail )
         {
-            if ( userData != null )
+            if( userAgent.UserData != null)
             {
-                var workUserAssetData = MongoHelper.UserAssetCollection.Get ( userData.Id ).GetAwaiter ( );
-                workUserAssetData.OnCompleted ( ( ) =>
-                {
-                    var userAssetData = workUserAssetData.GetResult ( );
-                    if(userAssetData == null)
-                    {
-                        return;
-                    }
-                    userAssetData.Resource.Gold = userAgent.gold.ToString ( );
-                    var workUpdateGold = MongoHelper.UserAssetCollection.UpdateResource ( userAssetData ).GetAwaiter ( );
-                    workUpdateGold.OnCompleted ( ( ) =>
-                    {
-                        TheLordServer.Log.InfoFormat ( "{0} 님의 골드가 [{1}] 갱신되었습니다.", userData.Info.Nickname, userAssetData.Gold );
-                    } );
-                } );
+                Task.Run ( userAgent.Save );
             }
 
             TheLordServer.Log.InfoFormat ( "[{0}]의 연결이 끊겼습니다.", LocalIP );

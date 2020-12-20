@@ -50,56 +50,22 @@ namespace TheLordServer.Handler
             return data;
         }
 
-        /// <summary>
-        /// 유저의 첫 설정이 끝났다면 필요한 정보들을 초기화 하고 DB에 저장합니다.
-        /// </summary>
-        public async Task UserInitialize ( UserData userData )
-        {
-            var userAssetData = new UserAssetData ( userData.Id );
-            var userAssetDataTask = MongoHelper.UserAssetCollection.Add ( userAssetData );
-
-            var buildingData = new BuildingData ( userData.Id );
-            buildingData.LV = 1;
-            switch ( (Race)userData.Info.Race )
-            {
-                case Race.Elf:
-                    buildingData.Index = 1;
-                    break;
-                case Race.Human:
-                    buildingData.Index = 101;
-                    break;
-                case Race.Undead:
-                    buildingData.Index = 201;
-                    break;
-                default:
-                    // [TODO] 에러 보내야함
-                    return;
-            }
-            var buildingDataTask = MongoHelper.BuildingCollection.Add ( buildingData );
-
-            await Task.WhenAll (
-                new List<Task> 
-                { 
-                    userAssetDataTask, 
-                    buildingDataTask 
-                }
-            );
-        }
-
         async Task<Dictionary<byte, object>> DBLoad ( ClientPeer peer )
         {
-            List<Task> work = new List<Task> ( );
+            await peer.userAgent.Load ( );
 
-            var userAssetData = await MongoHelper.UserAssetCollection.Get ( peer.userData.Id );
-            if ( userAssetData == null )
+            if ( peer.userAgent.UserAssetData == null )
             {
-                userAssetData = new UserAssetData ( peer.userData.Id );
-                work.Add ( MongoHelper.UserAssetCollection.Add ( userAssetData ) );
+                peer.userAgent.UserAssetData = new UserAssetData ( peer.Id );
             }
-            peer.userAgent.gold = new BigInteger ( userAssetData.Gold );
 
-            int buildingIndex;
-            switch ( (Race)peer.userData.Info.Race )
+            if(peer.userAgent.BuildingDataList == null)
+            {
+                peer.userAgent.BuildingDataList = new List<BuildingData> ( );
+            }
+
+            int buildingIndex = 0;
+            switch ( (Race)peer.userAgent.UserData.Info.Race )
             {
                 case Race.Elf:
                     buildingIndex = 1;
@@ -111,32 +77,25 @@ namespace TheLordServer.Handler
                     buildingIndex = 201;
                     break;
                 default:
-                    TheLordServer.Log.ErrorFormat ( "[{0}]의 [{1}]종족값이 이상합니다.", peer.userData.Id, peer.userData.Info.Race );
-                    // TODO 에러 보냄
+                    // TODO 에러보냄
+                    TheLordServer.Log.ErrorFormat ( "[{0}]의 종족값이 이상합니다.", peer.Id );
                     return null;
             }
 
-            var buildingData = await MongoHelper.BuildingCollection.GetByIndex ( peer.userData.Id, buildingIndex );
-            if(buildingData == null)
+            bool bExistMainBuilding = peer.userAgent.BuildingDataList.Exists ( x => x.Index == buildingIndex );
+            if ( bExistMainBuilding )
             {
-                buildingData = new BuildingData ( peer.userData.Id );
-                buildingData.LV = 1;
+                var buildingData = new BuildingData ( peer.Id );
                 buildingData.Index = buildingIndex;
-                work.Add ( MongoHelper.BuildingCollection.Add ( buildingData ) );
+                buildingData.LV = 1;
+                peer.userAgent.BuildingDataList.Add ( buildingData );
             }
-
-            if ( work.Count > 0 )
-            {
-                await Task.WhenAll ( work );
-            }
-
-            var buildingListData = await MongoHelper.BuildingCollection.GetAll ( peer.userData.Id );
 
             ProtoData.DBLoadData DBLoadData = new ProtoData.DBLoadData ( );
             DBLoadData.resourceData = new ProtoData.ResourceData ( );
-            DBLoadData.resourceData.gold = userAssetData.Gold;
-            DBLoadData.resourceData.cash = userAssetData.Cash;
-            foreach(var data in buildingListData)
+            DBLoadData.resourceData.gold = peer.userAgent.UserAssetData.Gold;
+            DBLoadData.resourceData.cash = peer.userAgent.UserAssetData.Cash;
+            foreach ( var data in peer.userAgent.BuildingDataList )
             {
                 ProtoData.DBLoadData.BuildingData bd = new ProtoData.DBLoadData.BuildingData ( );
                 bd.index = data.Index;
@@ -180,7 +139,7 @@ namespace TheLordServer.Handler
                             else
                             {
                                 response.ReturnCode = (short)NextAction.UserInfoCreate;
-                                peer.userData = result;
+                                peer.userAgent.UserData = result;
                             }
                             peer.SendOperationResponse(response, sendParameters);
                         });
@@ -195,25 +154,21 @@ namespace TheLordServer.Handler
 
                         if (bSuccess)
                         {
-                            peer.userData = userData;
+                            peer.userAgent.UserData = userData;
                             if (userData.Info.Race == 0 || string.IsNullOrEmpty(userData.Info.Nickname))
                             {
                                 response.ReturnCode = (short)NextAction.UserInfoCreate;
-                                peer.SendOperationResponse ( response, sendParameters );
                             }
                             else
                             {
-                                var wokrUserInitialize = UserInitialize ( userData ).GetAwaiter ( );
-                                wokrUserInitialize.OnCompleted ( ( ) =>
-                                {
-                                    response.ReturnCode = (short)NextAction.LoginSuccess;
-                                    ProtoData.UserData packet = new ProtoData.UserData ( );
-                                    packet.nickname = userData.Info.Nickname;
-                                    packet.race = userData.Info.Race;
-                                    response.Parameters = BinSerializer.ConvertPacket ( packet );
-                                    peer.SendOperationResponse ( response, sendParameters );
-                                } );
+                                response.ReturnCode = (short)NextAction.LoginSuccess;
+                                ProtoData.UserData packet = new ProtoData.UserData ( );
+                                packet.nickname = userData.Info.Nickname;
+                                packet.race = userData.Info.Race;
+                                response.Parameters = BinSerializer.ConvertPacket ( packet );
                             }
+                            peer.SendOperationResponse ( response, sendParameters );
+
                         }
                         else
                         {
@@ -227,47 +182,37 @@ namespace TheLordServer.Handler
 
         void OnUserResistrationRecevied( ClientPeer peer, OperationRequest operationRequest, SendParameters sendParameters )
         {
+            OperationResponse response = new OperationResponse ( operationRequest.OperationCode );
+
+            if(peer.userAgent.UserData == null)
+            {
+                // 로그인 씬으로
+                return;
+            }
+            
             byte[] bytes = (byte[])DictionaryTool.GetValue<byte, object> ( operationRequest.Parameters, 1 );
             ProtoData.UserData user = BinSerializer.Deserialize<ProtoData.UserData> ( bytes );
 
-            OperationResponse response = new OperationResponse ( operationRequest.OperationCode );
-            var workUserData = MongoHelper.UserCollection.Get(peer.userData.Id).GetAwaiter();
-            workUserData.OnCompleted(() => 
+            int lenth = user.nickname.Length;
+
+            if ( lenth < Nickname_Min_Lenth || lenth > Nickname_Max_Lenth || ( user.race == 0 || user.race >= (int)Race.End ) )
             {
-                UserData userData = workUserData.GetResult();
+                response.ReturnCode = (short)ReturnCode.Failed;
+                peer.SendOperationResponse ( response, sendParameters );
+            }
+            else
+            {
+                response.ReturnCode = (short)ReturnCode.Success;
 
-                if (null == userData)
-                {
-                    response.ReturnCode = (short)ReturnCode.Failed;
-                    peer.SendOperationResponse(response, sendParameters);
-                }
-                else
-                {
-                    int lenth = user.nickname.Length;
-                    if (lenth < Nickname_Min_Lenth || lenth > Nickname_Max_Lenth || (user.race == 0 || user.race >= (int)Race.End))
-                    {
-                        response.ReturnCode = (short)ReturnCode.Failed;
-                        peer.SendOperationResponse(response, sendParameters);
-                    }
-                    else
-                    {
-                        response.ReturnCode = (short)ReturnCode.Success;
+                peer.userAgent.UserData.Info.Nickname = user.nickname;
+                peer.userAgent.UserData.Info.Race = user.race;
 
-                        userData.Info.Nickname = user.nickname;
-                        userData.Info.Race = user.race;
-                        var workUpdate = MongoHelper.UserCollection.UpdateInfo(userData).GetAwaiter();
-                        workUpdate.OnCompleted(() =>
-                        {
-                            ProtoData.UserData packet = new ProtoData.UserData();
-                            packet.nickname = userData.Info.Nickname;
-                            packet.race = userData.Info.Race;
-                            response.Parameters = BinSerializer.ConvertPacket(packet);
-                            peer.SendOperationResponse(response, sendParameters);
-                            peer.userData = userData;
-                        } );
-                    }
-                }
-            });
+                ProtoData.UserData packet = new ProtoData.UserData ( );
+                packet.nickname = peer.userAgent.UserData.Info.Nickname;
+                packet.race = peer.userAgent.UserData.Info.Race;
+                response.Parameters = BinSerializer.ConvertPacket ( packet );
+                peer.SendOperationResponse ( response, sendParameters );
+            }
         }
 
         void OnLobbyEnterRecevied ( ClientPeer peer, OperationRequest operationRequest, SendParameters sendParameters )

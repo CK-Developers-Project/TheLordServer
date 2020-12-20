@@ -1,7 +1,6 @@
 ﻿using MongoDB.Driver;
 using System.Threading.Tasks;
 using MongoDB.Bson;
-using System;
 
 namespace TheLordServer.MongoDB.Model
 {
@@ -11,6 +10,20 @@ namespace TheLordServer.MongoDB.Model
     {
         public BuildingCollection ( IMongoDatabase database, string name ) : base ( database, name )
         {
+        }
+
+        public async Task Update(BuildingData data)
+        {
+            try
+            {
+                var filter = Builders<BuildingData>.Filter.Eq ( "_id", data.Id );
+                var update = Builders<BuildingData>.Update.Set ( ( x ) => x, data );
+                await collection.UpdateOneAsync ( filter, update, new UpdateOptions ( ) { IsUpsert = true } );
+            }
+            catch (MongoException e)
+            {
+                MongoHelper.Log.ErrorFormat ( "[{0}.Update] Error - {1}", typeof ( BuildingData ).Name, e.Message );
+            }
         }
 
         public async Task UpdateLV(BuildingData data)
