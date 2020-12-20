@@ -4,7 +4,7 @@ package ProtoData;
 message BuildingClickData {
     required int32 index = 1;
     required int32 clickAction = 2;
-    optional int32 value = 3;
+    optional int64 value = 3;
 }
 
 message BuildingConfirmData {

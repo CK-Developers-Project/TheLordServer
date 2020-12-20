@@ -29,10 +29,10 @@ namespace ProtoData
       get { return _clickAction; }
       set { _clickAction = value; }
     }
-    private int _value = default(int);
+    private long _value = default(long);
     [global::ProtoBuf.ProtoMember(3, IsRequired = false, Name=@"value", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
-    [global::System.ComponentModel.DefaultValue(default(int))]
-    public int value
+    [global::System.ComponentModel.DefaultValue(default(long))]
+    public long value
     {
       get { return _value; }
       set { _value = value; }
