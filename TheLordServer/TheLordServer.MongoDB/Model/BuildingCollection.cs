@@ -23,8 +23,12 @@ namespace TheLordServer.MongoDB.Model
                 if ( bExist )
                 {
                     var filter = Builders<BuildingData>.Filter.Eq ( "_id", data.Id );
-                    var update = Builders<BuildingData>.Update.Set ( ( x ) => x, data );
-                    await collection.UpdateOneAsync ( filter, update, new UpdateOptions ( ) { IsUpsert = true } );
+                    var update = Builders<BuildingData>.Update
+                                .SetOnInsert ( ( x ) => x.Index, data.Index )
+                                .SetOnInsert ( ( x ) => x.LV, data.LV )
+                                .SetOnInsert ( ( x ) => x.WorkTime, data.WorkTime )
+                                .SetOnInsert ( ( x ) => x.CharactertData, data.CharactertData );
+                    await collection.UpdateOneAsync ( filter, update );
                 }
                 else
                 {
@@ -43,8 +47,8 @@ namespace TheLordServer.MongoDB.Model
             {
                 var filter = Builders<BuildingData>.Filter.Eq ( "_id", data.Id ) &
                              Builders<BuildingData>.Filter.Eq( "Index", data.Index);
-                var update = Builders<BuildingData>.Update.Set ( ( x ) => x.LV, data.LV );
-                await collection.UpdateOneAsync ( filter, update, new UpdateOptions ( ) { IsUpsert = true } );
+                var update = Builders<BuildingData>.Update.SetOnInsert ( ( x ) => x.LV, data.LV );
+                await collection.UpdateOneAsync ( filter, update );
             }
             catch ( MongoException e )
             {
@@ -58,9 +62,9 @@ namespace TheLordServer.MongoDB.Model
             {
                 var filter = Builders<BuildingData>.Filter.Eq ( "_id", data.Id ) &
                              Builders<BuildingData>.Filter.Eq ( "WorkTime", data.WorkTime );
-                var update = Builders<BuildingData>.Update.Set ( ( x ) => x.WorkTime, data.WorkTime );
+                var update = Builders<BuildingData>.Update.SetOnInsert ( ( x ) => x.WorkTime, data.WorkTime );
 
-                await collection.UpdateOneAsync ( filter, update, new UpdateOptions ( ) { IsUpsert = true } );
+                await collection.UpdateOneAsync ( filter, update );
             }
             catch ( MongoException e )
             {
@@ -74,9 +78,9 @@ namespace TheLordServer.MongoDB.Model
             {
                 var filter = Builders<BuildingData>.Filter.Eq ( "_id", data.Id ) &
                              Builders<BuildingData>.Filter.Eq ( "CharactertData", data.CharactertData );
-                var update = Builders<BuildingData>.Update.Set ( ( x ) => x.CharactertData, data.CharactertData );
+                var update = Builders<BuildingData>.Update.SetOnInsert ( ( x ) => x.CharactertData, data.CharactertData );
 
-                await collection.UpdateOneAsync ( filter, update, new UpdateOptions ( ) { IsUpsert = true } );
+                await collection.UpdateOneAsync ( filter, update );
             }
             catch(MongoException e)
             {

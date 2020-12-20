@@ -21,8 +21,9 @@ namespace TheLordServer.MongoDB.Model
                 if ( bExist )
                 {
                     var filter = Builders<UserAssetData>.Filter.Eq ( "_id", data.Id );
-                    var update = Builders<UserAssetData>.Update.Set ( ( x ) => x, data );
-                    await collection.UpdateOneAsync ( filter, update, new UpdateOptions ( ) { IsUpsert = true } );
+                    var update = Builders<UserAssetData>.Update
+                                .SetOnInsert ( ( x ) => x.Resource, data.Resource );
+                    await collection.UpdateOneAsync ( filter, update );
                 }
                 else
                 {
@@ -41,9 +42,9 @@ namespace TheLordServer.MongoDB.Model
             {
                 var filter = Builders<UserAssetData>.Filter.Eq ( "_id", data.Id ) &
                              Builders<UserAssetData>.Filter.Eq ( "Resource", data.Resource );
-                var update = Builders<UserAssetData>.Update.Set ( ( x ) => x.Resource, data.Resource );
+                var update = Builders<UserAssetData>.Update.SetOnInsert ( ( x ) => x.Resource, data.Resource );
                                                  
-                await collection.UpdateOneAsync ( filter, update, new UpdateOptions ( ) { IsUpsert = true } );
+                await collection.UpdateOneAsync ( filter, update );
             }
             catch(MongoException e)
             {

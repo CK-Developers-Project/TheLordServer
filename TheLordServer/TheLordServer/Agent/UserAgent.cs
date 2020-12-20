@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using MongoDB.Bson;
+using MongoDB.Driver;
 
 namespace TheLordServer.Agent
 {
@@ -46,10 +47,15 @@ namespace TheLordServer.Agent
                 
                 TheLordServer.Log.InfoFormat ( "{0}의 정보를 동기화 하였습니다.", UserData.Info.Nickname );
             }
+            catch ( MongoException e )
+            {
+                TheLordServer.Log.ErrorFormat ( "[UserAgent.Save] {0}", e.Message );
+            }
             catch (Exception e)
             {
                 TheLordServer.Log.ErrorFormat ( "[UserAgent.Save] {0}", e.Message );
             }
+            
         }
 
     }
