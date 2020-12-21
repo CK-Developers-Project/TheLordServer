@@ -107,7 +107,7 @@ namespace TheLordServer.Handler
             var sheet = TheLordTable.Instance.BuildingTable.BuildingInfoSheet;
             var record = BaseTable.Get ( sheet, "index", index );
 
-            int unitCreate = (int)record["unitCreate"];
+            int unitCreate = (int)record["spawnCharacter"];
 
             int cost = (int)record["cost"];
 
@@ -270,7 +270,7 @@ namespace TheLordServer.Handler
             int unitCreate = (int)buildingInfoRecord["unitCreate"];
 
             var charactertInfoSheet = TheLordTable.Instance.CharacterTable.CharacterInfoSheet;
-            var charactertInfoRecord = BaseTable.Get(charactertInfoSheet, "index", index);
+            var charactertInfoRecord = BaseTable.Get ( charactertInfoSheet, "index", buildingData.CharactertData.Index );
             
             int hireCost = (int)charactertInfoRecord["cost"];
             int hireCount = buildingData.LV * unitCreate;
