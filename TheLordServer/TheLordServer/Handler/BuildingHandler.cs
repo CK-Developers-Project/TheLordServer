@@ -60,7 +60,7 @@ namespace TheLordServer.Handler
                     ClickAction_BuildingLevelUp ( peer, buildingClickData, operationRequest.OperationCode, sendParameters);
                     break;
                 case ClickAction.CharacterHire:
-                    CkickAction_CharacterHire ( peer, buildingClickData, sendParameters );
+                    CkickAction_CharacterHire ( peer, buildingClickData, operationRequest.OperationCode, sendParameters );
                     break;
                 default:
                     Failed ( peer, sendParameters );
@@ -137,11 +137,10 @@ namespace TheLordServer.Handler
 
                     response.ReturnCode = (short)ReturnCode.Success;
                     response.Parameters = BinSerializer.ConvertPacket(packet);
-                    BuildingEvent.OnUpdateBuilding ( peer, index );
                 }
                 else
                 {
-                    int second = 300;//(buildingData.LV + 1) * (int)record["buildTime"];
+                    int second = (buildingData.LV + 1) * (int)record["buildTime"];
                     buildingData.WorkTime = DateTime.UtcNow.ToUniversalTime ( ) + new TimeSpan(0, 0, second);
 
                     var packet = new ProtoData.BuildingClickData();
@@ -150,14 +149,14 @@ namespace TheLordServer.Handler
 
                     response.ReturnCode = (short)ReturnCode.Success;
                     response.Parameters = BinSerializer.ConvertPacket(packet);
-                    BuildingEvent.OnUpdateBuilding ( peer, index );
 
                     BigInteger gold = new BigInteger(cost);
                     peer.userAgent.UserAssetData.AddGold(-gold);
+
                 }
             }
-
             UserAssetEvent.OnUpdateResource(peer);
+            BuildingEvent.OnUpdateBuilding(peer, index);
             peer.SendOperationResponse(response, sendParameters);
         }
 
@@ -171,8 +170,6 @@ namespace TheLordServer.Handler
             var sheet = TheLordTable.Instance.BuildingTable.BuildingInfoSheet;
             var costSheet = TheLordTable.Instance.BuildingTable.BuildCostSheet;
             var record = BaseTable.Get(sheet, "index", index);
-
-            int unitCreate = (int)record["unitCreate"];
 
             if (buildingData == null)
             {
@@ -229,7 +226,6 @@ namespace TheLordServer.Handler
 
                         response.ReturnCode = (short)ReturnCode.Success;
                         response.Parameters = BinSerializer.ConvertPacket(packet);
-                        BuildingEvent.OnUpdateBuilding ( peer, index );
                     }
                     else
                     {
@@ -242,21 +238,67 @@ namespace TheLordServer.Handler
 
                         response.ReturnCode = (short)ReturnCode.Success;
                         response.Parameters = BinSerializer.ConvertPacket(packet);
-                        BuildingEvent.OnUpdateBuilding ( peer, index );
 
                         BigInteger gold = new BigInteger(cost);
                         peer.userAgent.UserAssetData.AddGold(-gold);
+
                     }
                 }
             }
 
             UserAssetEvent.OnUpdateResource(peer);
+            BuildingEvent.OnUpdateBuilding(peer, index);
             peer.SendOperationResponse(response, sendParameters);
         }
         
-        private void CkickAction_CharacterHire ( ClientPeer peer, ProtoData.BuildingClickData buildingClickData, SendParameters sendParameters )
+        private void CkickAction_CharacterHire ( ClientPeer peer, ProtoData.BuildingClickData buildingClickData, byte operationCode, SendParameters sendParameters )
         {
-            throw new NotImplementedException ( );
+            int index = buildingClickData.index;
+
+            var buildingData = peer.userAgent.BuildingDataList.Find(x => x.Index == index);
+            var response = new OperationResponse(operationCode);
+
+            if (buildingData == null)
+            {
+                // 건물 없음 예외처리
+                response.ReturnCode = (short)ReturnCode.Failed;
+                response.Parameters = BinSerializer.ConvertPacket(buildingClickData);
+            }
+
+            var buildingInfoSheet = TheLordTable.Instance.BuildingTable.BuildingInfoSheet;
+            var buildingInfoRecord = BaseTable.Get(buildingInfoSheet, "index", index);
+            int unitCreate = (int)buildingInfoRecord["unitCreate"];
+
+            var charactertInfoSheet = TheLordTable.Instance.CharacterTable.CharacterInfoSheet;
+            var charactertInfoRecord = BaseTable.Get(charactertInfoSheet, "index", index);
+            
+            int hireCost = (int)charactertInfoRecord["cost"];
+            int hireCount = buildingData.LV * unitCreate;
+
+            if (peer.userAgent.UserAssetData.GetGold() < hireCost)
+            {
+                // 돈 부족 예외처리
+                response.ReturnCode = (short)ReturnCode.Failed;
+                response.Parameters = BinSerializer.ConvertPacket(buildingClickData);
+            }
+            else
+            {
+                var packet = new ProtoData.BuildingClickData();
+                packet.index = index;
+                packet.clickAction = buildingClickData.clickAction;
+
+                response.ReturnCode = (short)ReturnCode.Success;
+                response.Parameters = BinSerializer.ConvertPacket(packet);
+
+                // 후처리
+                BigInteger gold = new BigInteger(hireCost);
+                peer.userAgent.UserAssetData.AddGold(-gold);
+
+                buildingData.CharactertData.Amount += hireCount;
+            }
+
+            UserAssetEvent.OnUpdateResource(peer);
+            BuildingEvent.OnUpdateBuilding(peer, index);
         }
 
 
@@ -290,22 +332,31 @@ namespace TheLordServer.Handler
             }
             else
             {
-                TimeSpan targetTime = buildingData.WorkTime - DateTime.UtcNow.ToUniversalTime ( );
-                
-                if ( targetTime.TotalSeconds <= 0)
+                bool bNotWork = buildingData.WorkTime.Equals(default);
+                if (bNotWork)
                 {
-                    buildingData.LV = 1;
-                    buildingData.WorkTime = default;
-                    response.ReturnCode = (short)ReturnCode.Success;
+                    // 건물이 지어지고 있는 상태가 아님
+                    response.ReturnCode = (short)ReturnCode.Failed;
                 }
                 else
                 {
-                    // 시간 예외처리
-                    BuildingEvent.OnUpdateBuilding ( peer, index );
-                    response.ReturnCode = (short)ReturnCode.Failed;
+                    TimeSpan targetTime = buildingData.WorkTime - DateTime.UtcNow.ToUniversalTime();
+
+                    if (targetTime.TotalSeconds <= 0)
+                    {
+                        buildingData.LV++;
+                        buildingData.WorkTime = default;
+                        response.ReturnCode = (short)ReturnCode.Success;
+                    }
+                    else
+                    {
+                        // 시간 예외처리
+                        response.ReturnCode = (short)ReturnCode.Failed;
+                    }
                 }
             }
 
+            BuildingEvent.OnUpdateBuilding(peer, index);
             response.Parameters = BinSerializer.ConvertPacket(buildingConfirmData);
             peer.SendOperationResponse(response, sendParameters);
         }
@@ -323,22 +374,31 @@ namespace TheLordServer.Handler
             }
             else
             {
-                TimeSpan targetTime = buildingData.WorkTime - DateTime.UtcNow.ToUniversalTime ( );
-
-                if ( targetTime.TotalSeconds <= 0 )
+                bool bNotWork = buildingData.WorkTime.Equals(default);
+                if(bNotWork)
                 {
-                    buildingData.LV++;
-                    buildingData.WorkTime = default;
-                    response.ReturnCode = (short)ReturnCode.Success;
+                    // 건물이 지어지고 있는 상태가 아님
+                    response.ReturnCode = (short)ReturnCode.Failed;
                 }
                 else
                 {
-                    // 시간 예외처리
-                    BuildingEvent.OnUpdateBuilding ( peer, index );
-                    response.ReturnCode = (short)ReturnCode.Failed;
+                    TimeSpan targetTime = buildingData.WorkTime - DateTime.UtcNow.ToUniversalTime();
+
+                    if (targetTime.TotalSeconds <= 0)
+                    {
+                        buildingData.LV++;
+                        buildingData.WorkTime = default;
+                        response.ReturnCode = (short)ReturnCode.Success;
+                    }
+                    else
+                    {
+                        // 시간 예외처리
+                        response.ReturnCode = (short)ReturnCode.Failed;
+                    }
                 }
             }
 
+            BuildingEvent.OnUpdateBuilding(peer, index);
             response.Parameters = BinSerializer.ConvertPacket(buildingConfirmData);
             peer.SendOperationResponse(response, sendParameters);
         }
