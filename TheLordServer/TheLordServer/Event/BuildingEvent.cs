@@ -21,6 +21,12 @@ namespace TheLordServer.Event
             EventData data = new EventData ( (byte)EventCode.UpdateBuilding );
             var buildingData = peer.userAgent.BuildingDataList.Find ( x => x.Index == index );
             
+            if(buildingData == null)
+            {
+                // 건물 없음
+                return;
+            }
+
             var packet = new ProtoData.BuildingData ( );
             packet.index = index;
             packet.LV = buildingData.LV;
