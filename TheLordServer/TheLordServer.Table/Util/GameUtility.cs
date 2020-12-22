@@ -39,6 +39,21 @@ namespace TheLordServer.Util
         }
 
 
+        public static DateTime Now()
+        {
+            return DateTime.SpecifyKind ( DateTime.UtcNow, DateTimeKind.Utc );
+        }
+
+        public static long RemaineTick ( TimeSpan timespan )
+        {
+            return Math.Max ( 0, timespan.Ticks );
+        }
+
+        public static long RemaineTick ( DateTime source )
+        {
+            return Math.Max ( 0, ( source - Now ( ) ).Ticks );
+        }
+
         public static string DateTime2String(DateTime dateTime)
         {
             if ( dateTime.Equals ( default ) )
@@ -47,8 +62,7 @@ namespace TheLordServer.Util
             }
             else
             {
-                return dateTime.ToUniversalTime ( ).ToString ( "yyyy'-'MM'-'dd'T'HH':'mm':'ss'.'fffK" );
-
+                return dateTime.ToString ( "yyyy'-'MM'-'dd'T'HH':'mm':'ss'.'fffK" );
             }
         }
 
@@ -57,7 +71,7 @@ namespace TheLordServer.Util
             DateTime dt = default;
             if ( !IsStringNull ( str ) )
             {
-                dt = DateTimeOffset.Parse ( str ).UtcDateTime;
+                dt = DateTimeOffset.Parse ( str ).DateTime;
             }
             return dt;
         }

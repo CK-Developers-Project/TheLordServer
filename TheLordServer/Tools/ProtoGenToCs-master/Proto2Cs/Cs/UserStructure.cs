@@ -117,10 +117,10 @@ namespace ProtoData
       get { return _LV; }
       set { _LV = value; }
     }
-    private string _tick = "";
-    [global::ProtoBuf.ProtoMember(3, IsRequired = false, Name=@"tick", DataFormat = global::ProtoBuf.DataFormat.Default)]
-    [global::System.ComponentModel.DefaultValue("")]
-    public string tick
+    private long _tick = default(long);
+    [global::ProtoBuf.ProtoMember(3, IsRequired = false, Name=@"tick", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
+    [global::System.ComponentModel.DefaultValue(default(long))]
+    public long tick
     {
       get { return _tick; }
       set { _tick = value; }

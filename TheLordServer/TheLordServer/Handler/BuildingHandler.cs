@@ -128,7 +128,7 @@ namespace TheLordServer.Handler
                     peer.userAgent.BuildingDataList.Add(buildingData);
                 }
 
-                if (buildingData.WorkTime.Ticks > 0)
+                if ( !buildingData.WorkTime.Equals ( default ) )
                 {
                     // 이미 업글중 예외 처리
                     var packet = new ProtoData.BuildingClickData();
@@ -141,7 +141,7 @@ namespace TheLordServer.Handler
                 else
                 {
                     int second = (buildingData.LV + 1) * (int)record["buildTime"];
-                    buildingData.WorkTime = DateTime.UtcNow.ToUniversalTime ( ) + new TimeSpan(0, 0, second);
+                    buildingData.WorkTime = GameUtility.Now() + new TimeSpan(0, 0, second);
 
                     var packet = new ProtoData.BuildingClickData();
                     packet.index = index;
@@ -208,7 +208,6 @@ namespace TheLordServer.Handler
                     timeRate = (float)st["buildTimeRate"];
                 }
                 int cost = (int)(buildingData.LV * (int)record["nextLV"] * costRate);
-
                 if (peer.userAgent.UserAssetData.GetGold() < cost)
                 {
                     // 돈 부족 예외처리
@@ -217,7 +216,7 @@ namespace TheLordServer.Handler
                 }
                 else
                 {
-                    if (buildingData.WorkTime.Ticks > 0)
+                    if ( !buildingData.WorkTime.Equals ( default ))
                     {
                         // 이미 업글중 예외 처리
                         var packet = new ProtoData.BuildingClickData();
@@ -230,7 +229,7 @@ namespace TheLordServer.Handler
                     else
                     {
                         int second = (buildingData.LV + 1) * (int)((int)record["buildTime"] * timeRate);
-                        buildingData.WorkTime = DateTime.UtcNow.ToUniversalTime ( ) + new TimeSpan(0, 0, second);
+                        buildingData.WorkTime = GameUtility.Now ( ) + new TimeSpan(0, 0, second);
 
                         var packet = new ProtoData.BuildingClickData();
                         packet.index = index;
@@ -340,9 +339,7 @@ namespace TheLordServer.Handler
                 }
                 else
                 {
-                    TimeSpan targetTime = buildingData.WorkTime - DateTime.UtcNow.ToUniversalTime();
-
-                    if (targetTime.TotalSeconds <= 0)
+                    if ( !buildingData.WorkTime.Equals ( default ) )
                     {
                         buildingData.LV++;
                         buildingData.WorkTime = default;
@@ -382,9 +379,7 @@ namespace TheLordServer.Handler
                 }
                 else
                 {
-                    TimeSpan targetTime = buildingData.WorkTime - DateTime.UtcNow.ToUniversalTime();
-
-                    if (targetTime.TotalSeconds <= 0)
+                    if ( !buildingData.WorkTime.Equals ( default ) )
                     {
                         buildingData.LV++;
                         buildingData.WorkTime = default;

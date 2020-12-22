@@ -44,7 +44,7 @@ namespace TheLordServer.Handler
         /// </summary>
         public async Task<UserData> Create ( UserData data, string id, string password )
         {
-            data = new UserData ( id, password, DateTime.UtcNow.ToUniversalTime ( ) );
+            data = new UserData ( id, password, GameUtility.Now ( ) );
             TheLordServer.Log.InfoFormat ( " [LoginHandler.Create] - {0} 유저가 생성되었습니다. ", id );
             await MongoHelper.UserCollection.Add ( data );
             return data;
@@ -57,9 +57,11 @@ namespace TheLordServer.Handler
             if ( peer.userAgent.UserAssetData == null )
             {
                 peer.userAgent.UserAssetData = new UserAssetData ( peer.Id );
+                peer.userAgent.UserAssetData.AddGold ( new BigInteger ( 100000000 ) );
+                peer.userAgent.UserAssetData.AddCash ( new BigInteger ( 100000000 ) );
             }
 
-            if(peer.userAgent.BuildingDataList == null)
+            if (peer.userAgent.BuildingDataList == null)
             {
                 peer.userAgent.BuildingDataList = new List<BuildingData> ( );
             }
@@ -99,7 +101,8 @@ namespace TheLordServer.Handler
                 ProtoData.DBLoadData.BuildingData bd = new ProtoData.DBLoadData.BuildingData ( );
                 bd.index = data.Index;
                 bd.LV = data.LV;
-                bd.tick = GameUtility.DateTime2String ( data.WorkTime );
+                bd.tick = data.WorkTime.Equals ( default ) ? -1 : GameUtility.RemaineTick ( data.WorkTime );
+                bd.amount = data.CharactertData.Amount;
                 DBLoadData.buildingDataList.Add ( bd );
             }
             return BinSerializer.ConvertPacket ( DBLoadData );

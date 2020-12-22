@@ -11,7 +11,7 @@ namespace TheLordServer.Event
     {
         public static void OnUpdateBuilding(ClientPeer peer, int index)
         {
-            TheLordServer.Log.Info ( "[OnUpdateBuilding]" );
+            TheLordServer.Log.InfoFormat ( "[OnUpdateBuilding] - {0}", peer.LocalIP );
             if (peer.userAgent.UserData == null)
             {
                 // 로그인 씬으로
@@ -30,7 +30,7 @@ namespace TheLordServer.Event
             var packet = new ProtoData.BuildingData ( );
             packet.index = index;
             packet.LV = buildingData.LV;
-            packet.tick = GameUtility.DateTime2String ( buildingData.WorkTime );
+            packet.tick = buildingData.WorkTime.Equals(default) ? -1 : GameUtility.RemaineTick ( buildingData.WorkTime );
             packet.amount = buildingData.CharactertData.Amount;
             data.Parameters = BinSerializer.ConvertPacket ( packet );
             peer.SendEvent ( data, new SendParameters ( ) );

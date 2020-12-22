@@ -17,7 +17,7 @@ message DBLoadData {
 	message BuildingData {
 		required int32 index = 1;
 		optional int32 LV = 2;
-		optional string tick = 3;
+		optional int64 tick = 3;
 		optional int32 amount = 4;
 	}
 
