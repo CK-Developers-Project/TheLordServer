@@ -1,9 +1,9 @@
 //BuildingInfo
-index,race,teer,name,spawnCharacter,showAbility,nextLV,cost,buildTime,unitCreate
+index,race,tier,name,spawnCharacter,showAbility,nextLV,cost,buildTime,unitCreate
 int32,int32,int32,string,int32,int32,int32,int32,int32,int32
-1,1,0,세계수,0,0,320,0,5,0
-101,2,0,왕국,0,0,320,0,5,0
-201,3,0,카타콤,0,0,320,0,5,0
+1,1,1,세계수,0,0,320,0,5,0
+101,2,1,왕국,0,0,320,0,5,0
+201,3,1,카타콤,0,0,320,0,5,0
 301,1,1,엘프 궁수 양성소,1,5,900,4500,2,1
 401,1,2,엘프 드루이드 양성소,2,5,13500,67500,2,1
 501,1,3,엘프 바드 양성소,3,5,202500,1012500,3,1
@@ -33,4 +33,26 @@ int32,float,float,float
 1,1,1.6,1.6
 16,1,1.2,1.3
 40,1,1.2,1.1
+
+//RequireTier
+tier,buildComponent,buildComponentLV
+int32,int32,List<int32>
+1,0,0
+1,0,0
+1,0,0
+1,0,0
+2,301,20
+3,401,20
+4,501,5
+5,601,5
+1,0,0
+2,801,20
+3,901,20
+4,1001,5
+5,1101,5
+1,0,0
+2,1301,20
+3,1401,20
+4,1501,5
+5,1601,5
 
