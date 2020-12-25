@@ -90,12 +90,14 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Agent\UserAgent.cs" />
+    <Compile Include="Event\ChatEvent.cs" />
     <Compile Include="ClientPeer.cs" />
     <Compile Include="Event\BuildingEvent.cs" />
     <Compile Include="Event\UserAssetEvent.cs" />
     <Compile Include="Event\UserEvent.cs" />
     <Compile Include="HandlerMedia.cs" />
     <Compile Include="Handler\BuildingHandler.cs" />
+    <Compile Include="Handler\ChatHandler.cs" />
     <Compile Include="Handler\IBaseHandler.cs" />
     <Compile Include="Handler\LoginHandler.cs" />
     <Compile Include="Handler\UserAssetHandler.cs" />

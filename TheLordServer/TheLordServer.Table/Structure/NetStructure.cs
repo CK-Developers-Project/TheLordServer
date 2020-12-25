@@ -20,12 +20,14 @@
         BuildingClick,      // 건물 클릭 처리 요청
         BuildingConfirm,    // 건물 확인 요청
 
+        // ChatHandler
+        Chat,
     }
 
     public enum EventCode : byte
     {
         // UserEvent
-           
+        UpdateChat,         // 채팅 갱신
 
         // UserAssetEvent
         UpdateResource,     // 리소스 갱신

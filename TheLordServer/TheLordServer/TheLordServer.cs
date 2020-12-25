@@ -4,6 +4,7 @@ using System.IO;
 using ExitGames.Logging;
 using ExitGames.Logging.Log4Net;
 using Photon.SocketServer;
+using System.Threading;
 
 namespace TheLordServer
 {
@@ -11,6 +12,7 @@ namespace TheLordServer
     using Table.Structure;
     using Handler;
     using MongoDB.Model;
+    using Event;
 
     // [Tootip]
     // 모든 서버의 기본 클래스는 ApplicationBase에 상속되어야 합니다
@@ -54,6 +56,10 @@ namespace TheLordServer
 
             TheLordTable.Instance.Load ( );
             MongoHelper.ConnectToMongoService ( Log );
+            
+            Thread t = new Thread(ChatEvent.OnUpdateChat);
+            t.IsBackground = true;
+            t.Start();
 
             AddHandler ( );
 
@@ -76,6 +82,7 @@ namespace TheLordServer
             LoginHandler.Instance.AddListener ( );
             UserAssetHandler.Instance.AddListener ( );
             BuildingHandler.Instance.AddListener ( );
+            ChatHandler.Instance.AddListener();
         }
 
         public void RemoveHandler ( )
@@ -83,6 +90,7 @@ namespace TheLordServer
             LoginHandler.Instance.RemoveListener ( );
             UserAssetHandler.Instance.RemoveListener ( );
             BuildingHandler.Instance.RemoveListener ( );
+            ChatHandler.Instance.RemoveListener();
         }
     }
 }
