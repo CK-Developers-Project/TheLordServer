@@ -24,3 +24,9 @@ message DBLoadData {
 	required ResourceData resourceData = 1;
 	repeated BuildingData buildingDataList = 2;
 }
+
+message ChatData {
+	required int32 index = 1;
+	required string nickname = 2;
+	required string msg = 3;
+}
