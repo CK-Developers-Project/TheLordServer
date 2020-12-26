@@ -25,7 +25,11 @@ namespace TheLordServer.Handler
         void OnChatReceived(ClientPeer peer, OperationRequest operationRequest, SendParameters sendParameters)
         {
             var chatData = BinSerializer.ConvertData<ProtoData.ChatData>(operationRequest.Parameters);
-            ChatEvent.chatDatas.Enqueue(chatData);
+            PeerChatData peerData = new PeerChatData();
+            peerData.peer = peer;
+            peerData.data = chatData;
+
+            ChatEvent.chatDatas.Enqueue(peerData);
         }
 
         public void Failed(ClientPeer peer, SendParameters sendParameters)
