@@ -6,6 +6,7 @@ namespace TheLordServer.Event
 {
     using Util;
     using Table.Structure;
+    using System.Threading;
 
     public class PeerChatData
     {
@@ -20,6 +21,8 @@ namespace TheLordServer.Event
         {
             while (true)
             {
+                Thread.Sleep(10);
+
                 if (chatDatas.Count > 0)
                 {
                     PeerChatData Peerdata = chatDatas.Dequeue();

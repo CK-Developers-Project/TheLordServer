@@ -25,6 +25,15 @@ namespace TheLordServer.Handler
         void OnChatReceived(ClientPeer peer, OperationRequest operationRequest, SendParameters sendParameters)
         {
             var chatData = BinSerializer.ConvertData<ProtoData.ChatData>(operationRequest.Parameters);
+
+            if (chatData.msg.IndexOf("/gold ") == 0)
+            {
+                BigInteger gold = int.Parse(chatData.msg.Replace("/gold ", ""));
+                peer.userAgent.UserAssetData.AddGold(gold);
+                UserAssetEvent.OnUpdateResource(peer);
+                return;
+            }
+
             PeerChatData peerData = new PeerChatData();
             peerData.peer = peer;
             peerData.data = chatData;
