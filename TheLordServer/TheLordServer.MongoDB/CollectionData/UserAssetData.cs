@@ -21,11 +21,15 @@ namespace TheLordServer.MongoDB.CollectionData
 
         public ObjectId Key { get; set; }
         public UserResource Resource { get; set; }
+        public int Index { get; set; }
+        public int Tier { get; set; }
 
         public UserAssetData ( ObjectId key ) : base ( ) 
         {
             Key = key;
             Resource = new UserResource ( );
+            Index = 0;
+            Tier = 0;
         }
 
         [BsonIgnore]

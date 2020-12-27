@@ -20,6 +20,14 @@
         BuildingClick,      // 건물 클릭 처리 요청
         BuildingConfirm,    // 건물 확인 요청
 
+        // RankingHandler
+        RequestRaidRanking, // 레이드 랭킹 갱신 요청
+        ResultRaidRanking,  // 레이드 랭킹 결과
+
+        // ContentHandler
+        EnterContent,       // 콘텐츠 입장
+        EnterRaid,          // 레이드 입장
+
         // ChatHandler
         Chat,
     }
@@ -34,5 +42,11 @@
 
         // BuidlingEvent
         UpdateBuilding,    // 건물 하나 갱신
+
+        // RankingEvent
+        UpdateRaidRanking,  // 레이드 랭킹 갱신
+
+        // BossEvent
+        UpdateRaidBoss,     // 레이드 보스 갱신
     }
 }

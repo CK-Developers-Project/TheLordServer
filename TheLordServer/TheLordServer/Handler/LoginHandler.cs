@@ -57,8 +57,7 @@ namespace TheLordServer.Handler
             if ( peer.userAgent.UserAssetData == null )
             {
                 peer.userAgent.UserAssetData = new UserAssetData ( peer.Id );
-                peer.userAgent.UserAssetData.AddGold ( new BigInteger ( 100000000 ) );
-                peer.userAgent.UserAssetData.AddCash ( new BigInteger ( 100000000 ) );
+                peer.userAgent.UserAssetData.Index = peer.userAgent.UserData.Info.Race;
             }
 
             if (peer.userAgent.BuildingDataList == null)
@@ -96,6 +95,9 @@ namespace TheLordServer.Handler
             DBLoadData.resourceData = new ProtoData.ResourceData ( );
             DBLoadData.resourceData.gold = peer.userAgent.UserAssetData.Gold;
             DBLoadData.resourceData.cash = peer.userAgent.UserAssetData.Cash;
+            DBLoadData.resourceData.index = peer.userAgent.UserAssetData.Index;
+            DBLoadData.resourceData.tier = peer.userAgent.UserAssetData.Tier;
+
             foreach ( var data in peer.userAgent.BuildingDataList )
             {
                 ProtoData.DBLoadData.BuildingData bd = new ProtoData.DBLoadData.BuildingData ( );

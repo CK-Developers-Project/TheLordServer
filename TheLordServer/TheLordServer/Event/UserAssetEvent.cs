@@ -24,6 +24,8 @@ namespace TheLordServer.Event
             var packet = new ProtoData.ResourceData ( );
             packet.gold = peer.userAgent.UserAssetData.Gold;
             packet.cash = peer.userAgent.UserAssetData.Cash;
+            packet.index = peer.userAgent.UserAssetData.Index;
+            packet.tier = peer.userAgent.UserAssetData.Tier;
             data.Parameters = BinSerializer.ConvertPacket ( packet );
             peer.SendEvent ( data, new SendParameters ( ) );
         }

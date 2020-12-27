@@ -1,0 +1,18 @@
+syntax = "proto2";
+package ProtoData;
+
+message RaidBossData {
+    required int32 index = 1;
+    required int32 hp = 2;
+}
+
+message RaidEnterData {
+    message CharacterData {
+        required int32 index = 1;
+        required int32 amount = 2;
+    }
+    
+    required RaidBossData raidBossData = 1;
+    repeated CharacterData characterDataList = 2;
+    required int32 totalScore = 3;
+}

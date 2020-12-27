@@ -1,10 +1,8 @@
-﻿using System;
-using Photon.SocketServer;
+﻿using Photon.SocketServer;
 
 namespace TheLordServer.Event
 {
     using Table.Structure;
-    using Table;
     using Util;
 
     public class BuildingEvent

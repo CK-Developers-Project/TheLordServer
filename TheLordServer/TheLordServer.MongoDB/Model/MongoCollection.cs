@@ -42,6 +42,21 @@ namespace TheLordServer.MongoDB.Model
             }
         }
 
+        public async Task<List<T>> GetAll ( )
+        {
+            try
+            {
+                var data = await collection.FindAsync ( Builders<T>.Filter.Empty );
+                var datas = data.ToList ( );
+                return datas.Count > 0 ? datas : null;
+            }
+            catch ( MongoException e )
+            {
+                MongoHelper.Log.ErrorFormat ( "[{0}.GetAll] Error - {1}", typeof ( T ).Name, e.Message );
+                return null;
+            }
+        }
+
         public async Task<List<T>> GetAll (ObjectId key)
         {
             try
@@ -56,6 +71,7 @@ namespace TheLordServer.MongoDB.Model
                 return null;
             }
         }
+
 
         public async Task Add(T data)
         {

@@ -48,6 +48,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ProtoBuf\BossStructure.cs" />
     <Compile Include="ProtoBuf\BuildingStructure.cs" />
     <Compile Include="ProtoBuf\UserStructure.cs" />
   </ItemGroup>

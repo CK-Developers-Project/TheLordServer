@@ -11,6 +11,8 @@ message UserData {
 message ResourceData {
 	optional string gold = 1;
 	optional string cash = 2;
+	optional int32 index = 3;
+	optional int32 tier = 4;
 }
 
 message DBLoadData {
@@ -29,4 +31,22 @@ message ChatData {
 	required int32 index = 1;
 	required string nickname = 2;
 	required string msg = 3;
+}
+
+message RaidRankingData {
+	message RankingData {
+		required string nickname = 1;
+		required int32 index = 2;
+		required int32 tier = 3;
+		required int32 score = 4;
+		required int32 ranking = 5;
+	}
+
+	required RankingData myRankingData = 1;
+	optional RankingData lastHitRankingData = 2;
+	repeated RankingData rankingDataList = 3;
+}
+
+message RaidRankingScoreData {
+	required int32 score = 1;
 }

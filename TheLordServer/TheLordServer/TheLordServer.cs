@@ -11,6 +11,7 @@ namespace TheLordServer
     using Table;
     using Table.Structure;
     using Handler;
+    using MongoDB.CollectionData;
     using MongoDB.Model;
     using Event;
 
@@ -23,6 +24,8 @@ namespace TheLordServer
         public static new TheLordServer Instance { get; private set; }
 
         public List<ClientPeer> peerList = new List<ClientPeer>();
+
+        public List<BossData> bossDataList = new List<BossData> ( );
 
         // [tooltip]
         // 클라이언트가 연결을 요청하면 서버가 해당 메소드를 호출합니다
@@ -56,11 +59,14 @@ namespace TheLordServer
 
             TheLordTable.Instance.Load ( );
             MongoHelper.ConnectToMongoService ( Log );
-            
-            Thread t = new Thread(ChatEvent.OnUpdateChat);
-            t.IsBackground = true;
-            t.Start();
 
+            var workBossDataList = MongoHelper.BossCollection.GetAll ( ).GetAwaiter ( );
+            workBossDataList.OnCompleted ( ( ) =>
+              {
+                  bossDataList = workBossDataList.GetResult ( );
+                  Log.InfoFormat ( "보스 데이터를 획득하였습니다." );
+              } );
+            
             AddHandler ( );
 
             Log.Info ( "서버 준비 완료!" );
@@ -70,6 +76,11 @@ namespace TheLordServer
         // 서버가 닫힐 때 호출 됩니다
         protected override void TearDown ( )
         {
+            /*foreach(var bossData in bossDataList)
+            {
+                var workBossData = MongoHelper.BossCollection.Update ( bossData ).GetAwaiter ( );
+            }*/
+
             //syncPositionThread.Stop ( );
             RemoveHandler ( );
 
@@ -83,6 +94,8 @@ namespace TheLordServer
             UserAssetHandler.Instance.AddListener ( );
             BuildingHandler.Instance.AddListener ( );
             ChatHandler.Instance.AddListener();
+            RankingHandler.Instance.AddListener ( );
+            ContentHandler.Instance.AddListener ( );
         }
 
         public void RemoveHandler ( )
@@ -91,6 +104,8 @@ namespace TheLordServer
             UserAssetHandler.Instance.RemoveListener ( );
             BuildingHandler.Instance.RemoveListener ( );
             ChatHandler.Instance.RemoveListener();
+            RankingHandler.Instance.RemoveListener ( );
+            ContentHandler.Instance.AddListener ( );
         }
     }
 }

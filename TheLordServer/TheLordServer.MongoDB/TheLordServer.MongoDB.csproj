@@ -75,10 +75,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CollectionData\BossData.cs" />
     <Compile Include="CollectionData\BuildingData.cs" />
+    <Compile Include="CollectionData\RaidRankingData.cs" />
+    <Compile Include="Model\BossCollection.cs" />
     <Compile Include="Model\BuildingCollection.cs" />
     <Compile Include="Model\MongoCollection.cs" />
     <Compile Include="Model\MongoHelper.cs" />
+    <Compile Include="Model\RaidRankingCollection.cs" />
     <Compile Include="Model\UserAssetCollection.cs" />
     <Compile Include="Model\UserCollection.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -44,7 +44,14 @@ namespace TheLordServer.Agent
                     }
                     await Task.WhenAll ( workBuildingDataList );
                 }
-                
+
+                List<Task> workBossDataList = new List<Task> ( );
+                foreach (var boss in TheLordServer.Instance.bossDataList )
+                {
+                    workBossDataList.Add ( MongoHelper.BossCollection.Update ( boss ) );
+                }
+                await Task.WhenAll ( workBossDataList );
+
                 TheLordServer.Log.InfoFormat ( "{0}의 정보를 동기화 하였습니다.", UserData.Info.Nickname );
             }
             catch ( MongoException e )

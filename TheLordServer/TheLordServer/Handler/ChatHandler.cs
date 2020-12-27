@@ -34,11 +34,7 @@ namespace TheLordServer.Handler
                 return;
             }
 
-            PeerChatData peerData = new PeerChatData();
-            peerData.peer = peer;
-            peerData.data = chatData;
-
-            ChatEvent.chatDatas.Enqueue(peerData);
+            ChatEvent.OnUpdateChat ( peer, chatData );
         }
 
         public void Failed(ClientPeer peer, SendParameters sendParameters)

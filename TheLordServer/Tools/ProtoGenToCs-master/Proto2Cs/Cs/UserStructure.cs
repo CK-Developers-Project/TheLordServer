@@ -73,6 +73,22 @@ namespace ProtoData
       get { return _cash; }
       set { _cash = value; }
     }
+    private int _index = default(int);
+    [global::ProtoBuf.ProtoMember(3, IsRequired = false, Name=@"index", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
+    [global::System.ComponentModel.DefaultValue(default(int))]
+    public int index
+    {
+      get { return _index; }
+      set { _index = value; }
+    }
+    private int _tier = default(int);
+    [global::ProtoBuf.ProtoMember(4, IsRequired = false, Name=@"tier", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
+    [global::System.ComponentModel.DefaultValue(default(int))]
+    public int tier
+    {
+      get { return _tier; }
+      set { _tier = value; }
+    }
     private global::ProtoBuf.IExtension extensionObject;
     global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
       { return global::ProtoBuf.Extensible.GetExtensionObject(ref extensionObject, createIfMissing); }
@@ -168,6 +184,100 @@ namespace ProtoData
     {
       get { return _msg; }
       set { _msg = value; }
+    }
+    private global::ProtoBuf.IExtension extensionObject;
+    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
+      { return global::ProtoBuf.Extensible.GetExtensionObject(ref extensionObject, createIfMissing); }
+  }
+  
+  [global::System.Serializable, global::ProtoBuf.ProtoContract(Name=@"RaidRankingData")]
+  public partial class RaidRankingData : global::ProtoBuf.IExtensible
+  {
+    public RaidRankingData() {}
+    
+    private ProtoData.RaidRankingData.RankingData _myRankingData;
+    [global::ProtoBuf.ProtoMember(1, IsRequired = true, Name=@"myRankingData", DataFormat = global::ProtoBuf.DataFormat.Default)]
+    public ProtoData.RaidRankingData.RankingData myRankingData
+    {
+      get { return _myRankingData; }
+      set { _myRankingData = value; }
+    }
+    private ProtoData.RaidRankingData.RankingData _lastHitRankingData = null;
+    [global::ProtoBuf.ProtoMember(2, IsRequired = false, Name=@"lastHitRankingData", DataFormat = global::ProtoBuf.DataFormat.Default)]
+    [global::System.ComponentModel.DefaultValue(null)]
+    public ProtoData.RaidRankingData.RankingData lastHitRankingData
+    {
+      get { return _lastHitRankingData; }
+      set { _lastHitRankingData = value; }
+    }
+    private readonly global::System.Collections.Generic.List<ProtoData.RaidRankingData.RankingData> _rankingDataList = new global::System.Collections.Generic.List<ProtoData.RaidRankingData.RankingData>();
+    [global::ProtoBuf.ProtoMember(3, Name=@"rankingDataList", DataFormat = global::ProtoBuf.DataFormat.Default)]
+    public global::System.Collections.Generic.List<ProtoData.RaidRankingData.RankingData> rankingDataList
+    {
+      get { return _rankingDataList; }
+    }
+  
+  [global::System.Serializable, global::ProtoBuf.ProtoContract(Name=@"RankingData")]
+  public partial class RankingData : global::ProtoBuf.IExtensible
+  {
+    public RankingData() {}
+    
+    private string _nickname;
+    [global::ProtoBuf.ProtoMember(1, IsRequired = true, Name=@"nickname", DataFormat = global::ProtoBuf.DataFormat.Default)]
+    public string nickname
+    {
+      get { return _nickname; }
+      set { _nickname = value; }
+    }
+    private int _index;
+    [global::ProtoBuf.ProtoMember(2, IsRequired = true, Name=@"index", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
+    public int index
+    {
+      get { return _index; }
+      set { _index = value; }
+    }
+    private int _tier;
+    [global::ProtoBuf.ProtoMember(3, IsRequired = true, Name=@"tier", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
+    public int tier
+    {
+      get { return _tier; }
+      set { _tier = value; }
+    }
+    private int _score;
+    [global::ProtoBuf.ProtoMember(4, IsRequired = true, Name=@"score", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
+    public int score
+    {
+      get { return _score; }
+      set { _score = value; }
+    }
+    private int _ranking;
+    [global::ProtoBuf.ProtoMember(5, IsRequired = true, Name=@"ranking", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
+    public int ranking
+    {
+      get { return _ranking; }
+      set { _ranking = value; }
+    }
+    private global::ProtoBuf.IExtension extensionObject;
+    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
+      { return global::ProtoBuf.Extensible.GetExtensionObject(ref extensionObject, createIfMissing); }
+  }
+  
+    private global::ProtoBuf.IExtension extensionObject;
+    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
+      { return global::ProtoBuf.Extensible.GetExtensionObject(ref extensionObject, createIfMissing); }
+  }
+  
+  [global::System.Serializable, global::ProtoBuf.ProtoContract(Name=@"RaidRankingScoreData")]
+  public partial class RaidRankingScoreData : global::ProtoBuf.IExtensible
+  {
+    public RaidRankingScoreData() {}
+    
+    private int _score;
+    [global::ProtoBuf.ProtoMember(1, IsRequired = true, Name=@"score", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
+    public int score
+    {
+      get { return _score; }
+      set { _score = value; }
     }
     private global::ProtoBuf.IExtension extensionObject;
     global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)

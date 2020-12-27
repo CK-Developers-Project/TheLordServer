@@ -6,38 +6,19 @@ namespace TheLordServer.Event
 {
     using Util;
     using Table.Structure;
-    using System.Threading;
-
-    public class PeerChatData
-    {
-        public ClientPeer peer;
-        public ProtoData.ChatData data;
-    }
 
     public class ChatEvent
     {
-        public static Queue<PeerChatData> chatDatas = new Queue<PeerChatData>();
-        public static void OnUpdateChat()
+        public static void OnUpdateChat(ClientPeer peer, ProtoData.ChatData ChatData )
         {
-            while (true)
+            foreach(var client in TheLordServer.Instance.peerList)
             {
-                Thread.Sleep(10);
+                if ( client.Equals(peer) )
+                    continue;
 
-                if (chatDatas.Count > 0)
-                {
-                    PeerChatData Peerdata = chatDatas.Dequeue();
-                    ClientPeer myPeer = Peerdata.peer;
-                    EventData data = new EventData((byte)EventCode.UpdateChat);
-                    data.Parameters = BinSerializer.ConvertPacket(Peerdata.data);
-
-                    foreach (ClientPeer peer in TheLordServer.Instance.peerList)
-                    {
-                        if (peer == myPeer)
-                            continue;
-
-                        peer.SendEvent(data, new SendParameters());
-                    }
-                }
+                EventData data = new EventData ( (byte)EventCode.UpdateChat );
+                data.Parameters = BinSerializer.ConvertPacket ( ChatData );
+                client.SendEvent ( data, new SendParameters ( ) );
             }
         }
     }

@@ -66,10 +66,6 @@
     <Reference Include="protobuf-net, Version=2.4.0.0, Culture=neutral, PublicKeyToken=257b51d87d2e4d67, processorArchitecture=MSIL">
       <HintPath>..\packages\protobuf-net.2.4.6\lib\net40\protobuf-net.dll</HintPath>
     </Reference>
-    <Reference Include="ProtoBuf2Data, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Plugins\ProtoBuf2Data.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Buffers, Version=4.0.1.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Buffers.4.3.0\lib\netstandard1.1\System.Buffers.dll</HintPath>
@@ -90,22 +86,30 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Agent\UserAgent.cs" />
+    <Compile Include="Event\BossEvent.cs" />
     <Compile Include="Event\ChatEvent.cs" />
     <Compile Include="ClientPeer.cs" />
     <Compile Include="Event\BuildingEvent.cs" />
+    <Compile Include="Event\RankingEvent.cs" />
     <Compile Include="Event\UserAssetEvent.cs" />
     <Compile Include="Event\UserEvent.cs" />
     <Compile Include="HandlerMedia.cs" />
     <Compile Include="Handler\BuildingHandler.cs" />
     <Compile Include="Handler\ChatHandler.cs" />
+    <Compile Include="Handler\ContentHandler.cs" />
     <Compile Include="Handler\IBaseHandler.cs" />
     <Compile Include="Handler\LoginHandler.cs" />
+    <Compile Include="Handler\RankingHandler.cs" />
     <Compile Include="Handler\UserAssetHandler.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TheLordServer.cs" />
     <Compile Include="TheLordTable.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\ProtoBuf2Data\ProtoBuf2Data.csproj">
+      <Project>{ad2c47d5-841b-499d-9f60-a61c3f24f3d0}</Project>
+      <Name>ProtoBuf2Data</Name>
+    </ProjectReference>
     <ProjectReference Include="..\TheLordServer.MongoDB\TheLordServer.MongoDB.csproj">
       <Project>{41497c89-b561-49f4-bb2b-6468f0dca46b}</Project>
       <Name>TheLordServer.MongoDB</Name>

@@ -23,7 +23,9 @@ namespace TheLordServer.MongoDB.Model
                     var filter = Builders<UserAssetData>.Filter.Eq ( "_id", data.Id );
                     var update = Builders<UserAssetData>.Update
                                 .Set ( ( x ) => x.Key, data.Key )
-                                .Set ( ( x ) => x.Resource, data.Resource );
+                                .Set ( ( x ) => x.Resource, data.Resource )
+                                .Set ( ( x ) => x.Index, data.Index )
+                                .Set ( ( x ) => x.Tier, data.Tier );
                     await collection.UpdateOneAsync ( filter, update, new UpdateOptions { IsUpsert = true } );
                 }
                 else
@@ -49,6 +51,21 @@ namespace TheLordServer.MongoDB.Model
             catch(MongoException e)
             {
                 MongoHelper.Log.ErrorFormat ( "[{0}.UpdateGold] Error - {1}", typeof ( UserAssetCollection ).Name, e.Message );
+            }
+        }
+
+        public async Task UpdateTier(UserAssetData data)
+        {
+            try
+            {
+                var filter = Builders<UserAssetData>.Filter.Eq ( "_id", data.Id );
+                var update = Builders<UserAssetData>.Update.SetOnInsert ( ( x ) => x.Tier, data.Tier );
+
+                await collection.UpdateOneAsync ( filter, update );
+            }
+            catch ( MongoException e )
+            {
+                MongoHelper.Log.ErrorFormat ( "[{0}.UpdateTier] Error - {1}", typeof ( UserAssetCollection ).Name, e.Message );
             }
         }
     }
