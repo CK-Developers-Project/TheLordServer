@@ -14,7 +14,7 @@ namespace TheLordServer.Event
         public static void OnUpdateResource(ClientPeer peer)
         {
             TheLordServer.Log.InfoFormat ( "[OnUpdateResource] - {0}", peer.LocalIP );
-            if ( peer.userAgent.UserData == null )
+            if ( peer.userAgent.UserData == null || peer.userAgent.UserAssetData == null)
             {
                 // 로그인 씬으로
                 return;

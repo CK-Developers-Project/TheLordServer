@@ -1,5 +1,6 @@
 ﻿using Photon.SocketServer;
 using System.Collections.Generic;
+using System;
 
 namespace TheLordServer.Event
 {
@@ -49,6 +50,10 @@ namespace TheLordServer.Event
                 data.ranking = cnt;
                 packet.rankingDataList.Add ( data );
             }
+
+            var current = GameUtility.Now ( ) - TheLordServer.Instance.bossDataList[0].CreateTime;
+            var total = new TimeSpan ( 24, 0, 0 ) - current;
+            packet.tick = total.Ticks;
 
             EventData eventData = new EventData ( (byte)EventCode.UpdateRaidRanking );
             eventData.Parameters = BinSerializer.ConvertPacket ( packet );

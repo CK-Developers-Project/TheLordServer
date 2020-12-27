@@ -14,6 +14,7 @@ namespace TheLordServer
     using MongoDB.CollectionData;
     using MongoDB.Model;
     using Event;
+    using GameThread;
 
     // [Tootip]
     // 모든 서버의 기본 클래스는 ApplicationBase에 상속되어야 합니다
@@ -26,6 +27,7 @@ namespace TheLordServer
         public List<ClientPeer> peerList = new List<ClientPeer>();
 
         public List<BossData> bossDataList = new List<BossData> ( );
+        public ThreadRaidBoss raidBossThread = new ThreadRaidBoss ( );
 
         // [tooltip]
         // 클라이언트가 연결을 요청하면 서버가 해당 메소드를 호출합니다
@@ -69,6 +71,8 @@ namespace TheLordServer
             
             AddHandler ( );
 
+            raidBossThread.Start ( );
+
             Log.Info ( "서버 준비 완료!" );
         }
 
@@ -76,12 +80,7 @@ namespace TheLordServer
         // 서버가 닫힐 때 호출 됩니다
         protected override void TearDown ( )
         {
-            /*foreach(var bossData in bossDataList)
-            {
-                var workBossData = MongoHelper.BossCollection.Update ( bossData ).GetAwaiter ( );
-            }*/
-
-            //syncPositionThread.Stop ( );
+            raidBossThread.Stop ( );
             RemoveHandler ( );
 
             Log.Info ( "서버 종료" );

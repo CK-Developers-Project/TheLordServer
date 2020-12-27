@@ -45,6 +45,7 @@ message RaidRankingData {
 	required RankingData myRankingData = 1;
 	optional RankingData lastHitRankingData = 2;
 	repeated RankingData rankingDataList = 3;
+	required int64 tick = 4;
 }
 
 message RaidRankingScoreData {

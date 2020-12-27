@@ -26,5 +26,14 @@ namespace TheLordServer.Event
             eventData.Parameters = BinSerializer.ConvertPacket ( packet );
             peer.SendEvent ( eventData, new SendParameters ( ) );
         }
+
+        public static void OnExitRaidBoss( )
+        {
+            EventData eventData = new EventData ( (byte)EventCode.ExitRaidBoss );
+            foreach (var client in TheLordServer.Instance.peerList)
+            {
+                client.SendEvent ( eventData, new SendParameters ( ) );
+            }
+        }
     }
 }

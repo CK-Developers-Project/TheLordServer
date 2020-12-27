@@ -217,6 +217,13 @@ namespace ProtoData
       get { return _rankingDataList; }
     }
   
+    private long _tick;
+    [global::ProtoBuf.ProtoMember(4, IsRequired = true, Name=@"tick", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
+    public long tick
+    {
+      get { return _tick; }
+      set { _tick = value; }
+    }
   [global::System.Serializable, global::ProtoBuf.ProtoContract(Name=@"RankingData")]
   public partial class RankingData : global::ProtoBuf.IExtensible
   {

@@ -104,6 +104,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TheLordServer.cs" />
     <Compile Include="TheLordTable.cs" />
+    <Compile Include="GameThread\ThreadRaidBoss.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ProtoBuf2Data\ProtoBuf2Data.csproj">

@@ -99,6 +99,16 @@ namespace TheLordServer.Handler
                   {
                       rankingScore.LastHit = true;
                       peer.userAgent.UserAssetData.Tier = 10;
+                      BossEvent.OnExitRaidBoss ( );
+                  }
+                  else
+                  {
+                      foreach(var building in peer.userAgent.BuildingDataList )
+                      {
+                          int amount = building.CharactertData.Amount;
+                          int subract = (int)Math.Round ( amount * 0.33F );
+                          building.CharactertData.Amount = Math.Max ( 0, amount - subract );
+                      }
                   }
 
                   rankingScore.Score += data.score;

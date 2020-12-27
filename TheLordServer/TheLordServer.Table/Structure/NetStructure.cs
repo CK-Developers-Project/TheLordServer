@@ -48,5 +48,6 @@
 
         // BossEvent
         UpdateRaidBoss,     // 레이드 보스 갱신
+        ExitRaidBoss,       // 레이드 보스씬 퇴장 (누군가 보스를 잡았음)
     }
 }
