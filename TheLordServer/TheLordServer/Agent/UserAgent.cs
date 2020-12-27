@@ -18,9 +18,16 @@ namespace TheLordServer.Agent
 
         public ObjectId Id { get => UserData.Id; }
 
+        bool isLoad = false;
 
         public async Task Load()
         {
+            if(isLoad)
+            {
+                return;
+            }
+
+            isLoad = true;
             UserAssetData = await MongoHelper.UserAssetCollection.Get ( Id );
             BuildingDataList = await MongoHelper.BuildingCollection.GetAll ( Id );
         }
