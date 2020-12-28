@@ -25,6 +25,13 @@ namespace TheLordServer
         public static new TheLordServer Instance { get; private set; }
 
         public List<ClientPeer> peerList = new List<ClientPeer>();
+        public List<ClientPeer> PeerList {
+            get
+            {
+                peerList.RemoveAll ( x => x == null );
+                return peerList;
+            }
+        }
 
         public List<BossData> bossDataList = new List<BossData> ( );
         public ThreadRaidBoss raidBossThread = new ThreadRaidBoss ( );
@@ -36,7 +43,7 @@ namespace TheLordServer
         {
             Log.InfoFormat ( "[{0}] 클라이언트 연결이 시작되었습니다", DateTime.Now );
             ClientPeer peer = new ClientPeer(initRequest);
-            peerList.Add(peer);
+            PeerList.Add(peer);
             return peer;
         }
 
@@ -45,6 +52,8 @@ namespace TheLordServer
         protected override void Setup ( )
         {
             Instance = this;
+
+            raidBossThread.Start ( );
 
             // Config : value="%property{Photon:ApplicationLogPath}\\TheLord.Server.log"
             // Path : %YourFolder%\Photon-OnPremise-Server-SDK_v4-0-29-11263\deploy\bin_Win64\log
@@ -68,10 +77,8 @@ namespace TheLordServer
                   bossDataList = workBossDataList.GetResult ( );
                   Log.InfoFormat ( "보스 데이터를 획득하였습니다." );
               } );
-            
-            AddHandler ( );
 
-            raidBossThread.Start ( );
+            AddHandler ( );
 
             Log.Info ( "서버 준비 완료!" );
         }

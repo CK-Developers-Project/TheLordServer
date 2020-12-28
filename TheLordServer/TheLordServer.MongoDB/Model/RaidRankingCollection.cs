@@ -25,7 +25,8 @@ namespace TheLordServer.MongoDB.Model
                     var update = Builders<RaidRankingData>.Update
                                 .Set ( ( x ) => x.Key, data.Key )
                                 .Set ( ( x ) => x.Score, data.Score )
-                                .Set ( ( x ) => x.LastHit, data.LastHit );
+                                .Set ( ( x ) => x.LastHit, data.LastHit )
+                                .Set ( ( x ) => x.Tier, data.Tier );
                     await collection.UpdateOneAsync ( filter, update, new UpdateOptions { IsUpsert = true } );
                 }
                 else

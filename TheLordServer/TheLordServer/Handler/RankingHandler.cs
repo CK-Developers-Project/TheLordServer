@@ -59,6 +59,7 @@ namespace TheLordServer.Handler
                   // TODO : 보스 디졌는지 안디졌는지 확인
 
                   var myRankingData = rankingDataList.Find ( x => x.Key.Equals ( peer.Id ) );
+                  var lastHitData = rankingDataList.Find ( x => x.LastHit == true );
                   if(myRankingData == null)
                   {
                       myRankingData = CreateRaidRankingData ( peer );
@@ -66,12 +67,13 @@ namespace TheLordServer.Handler
                       workRankingAdd.OnCompleted ( ( ) =>
                       {
                             rankingDataList.Add ( myRankingData );
-                            RankingEvent.OnUpdateRaidRanking ( peer, myRankingData, null, rankingDataList );
+                            RankingEvent.OnUpdateRaidRanking ( peer, myRankingData, lastHitData, rankingDataList );
+                            BossEvent.OnUpdateRaidBoss ( peer, 16 );
                       } );
                   }
                   else
                   {
-                      RankingEvent.OnUpdateRaidRanking ( peer, myRankingData, null, rankingDataList );
+                      RankingEvent.OnUpdateRaidRanking ( peer, myRankingData, lastHitData, rankingDataList );
                       BossEvent.OnUpdateRaidBoss ( peer, 16 );
                   }
               } );
@@ -98,7 +100,6 @@ namespace TheLordServer.Handler
                   if ( TheLordServer.Instance.bossDataList[0].HP <= 0F )
                   {
                       rankingScore.LastHit = true;
-                      peer.userAgent.UserAssetData.Tier = 10;
                       BossEvent.OnExitRaidBoss ( );
                   }
                   else
@@ -106,7 +107,7 @@ namespace TheLordServer.Handler
                       foreach(var building in peer.userAgent.BuildingDataList )
                       {
                           int amount = building.CharactertData.Amount;
-                          int subract = (int)Math.Round ( amount * 0.33F );
+                          int subract = (int)Math.Ceiling ( amount * 0.66F );
                           building.CharactertData.Amount = Math.Max ( 0, amount - subract );
                       }
                   }

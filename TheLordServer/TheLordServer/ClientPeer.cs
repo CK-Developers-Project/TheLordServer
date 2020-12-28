@@ -23,8 +23,8 @@ namespace TheLordServer
                 userAgent.Save ( );
             }
 
-            TheLordServer.Log.InfoFormat ( "[{0}]의 연결이 끊겼습니다.", LocalIP );
-            TheLordServer.Instance.peerList.Remove(this);
+            TheLordServer.Log.InfoFormat ( "[{0}]의 연결이 끊겼습니다. - 현재 플레이어 [{1}]", LocalIP, TheLordServer.Instance.PeerList.Count );
+            TheLordServer.Instance.PeerList.Remove(this);
         }
 
         // [tooltip]

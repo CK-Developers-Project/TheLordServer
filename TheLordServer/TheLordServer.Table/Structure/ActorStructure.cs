@@ -11,4 +11,19 @@ namespace TheLordServer.Table.Structure
         End
     }
 
+    public enum TierType : int
+    {
+        Unrank = 0,
+        Challanger,
+        Iron,
+        Bronze,
+        Silver,
+        Gold,
+        Platinum,
+        Diamond,
+        Master,
+        Lengend,
+        God,
+    }
+
 }

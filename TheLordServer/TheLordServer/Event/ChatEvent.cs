@@ -11,7 +11,7 @@ namespace TheLordServer.Event
     {
         public static void OnUpdateChat(ClientPeer peer, ProtoData.ChatData ChatData )
         {
-            foreach(var client in TheLordServer.Instance.peerList)
+            foreach(var client in TheLordServer.Instance.PeerList )
             {
                 if ( client.Equals(peer) )
                     continue;

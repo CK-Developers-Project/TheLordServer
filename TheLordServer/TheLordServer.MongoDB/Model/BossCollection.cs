@@ -24,7 +24,8 @@ namespace TheLordServer.MongoDB.Model
                     var filter = Builders<BossData>.Filter.Eq ( "_id", data.Id );
                     var update = Builders<BossData>.Update
                                 .Set ( ( x ) => x.Index, data.Index )
-                                .Set ( ( x ) => x.HP, data.HP );
+                                .Set ( ( x ) => x.HP, data.HP )
+                                .Set ( ( x ) => x.CreateTime, data.CreateTime );
                     await collection.UpdateOneAsync ( filter, update, new UpdateOptions { IsUpsert = true } );
                 }
                 else

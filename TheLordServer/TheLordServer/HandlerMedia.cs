@@ -83,7 +83,7 @@ namespace TheLordServer
 
         public static void Dispatch ( OperationCode type, ClientPeer peer, OperationRequest operationRequest, SendParameters sendParameters )
         {
-            TheLordServer.Log.InfoFormat ( "[{0}]", type );
+            TheLordServer.Log.InfoFormat ( "[{0}] - {1}", type, peer.RemoteIPAddress );
             Delegate dgt;
             if ( msgTable.TryGetValue ( type, out dgt ) )
             {

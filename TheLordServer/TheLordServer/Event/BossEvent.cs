@@ -30,7 +30,7 @@ namespace TheLordServer.Event
         public static void OnExitRaidBoss( )
         {
             EventData eventData = new EventData ( (byte)EventCode.ExitRaidBoss );
-            foreach (var client in TheLordServer.Instance.peerList)
+            foreach (var client in TheLordServer.Instance.PeerList )
             {
                 client.SendEvent ( eventData, new SendParameters ( ) );
             }

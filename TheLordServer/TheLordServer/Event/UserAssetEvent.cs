@@ -13,7 +13,7 @@ namespace TheLordServer.Event
     {
         public static void OnUpdateResource(ClientPeer peer)
         {
-            TheLordServer.Log.InfoFormat ( "[OnUpdateResource] - {0}", peer.LocalIP );
+            TheLordServer.Log.InfoFormat ( "[OnUpdateResource] - {0}", peer.RemoteIPAddress );
             if ( peer.userAgent.UserData == null || peer.userAgent.UserAssetData == null)
             {
                 // 로그인 씬으로

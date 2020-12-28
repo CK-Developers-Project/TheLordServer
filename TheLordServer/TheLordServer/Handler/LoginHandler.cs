@@ -91,6 +91,11 @@ namespace TheLordServer.Handler
                 peer.userAgent.BuildingDataList.Add ( buildingData );
             }
 
+            return GetUserDB(peer);
+        }
+
+        Dictionary<byte, object> GetUserDB( ClientPeer peer )
+        {
             ProtoData.DBLoadData DBLoadData = new ProtoData.DBLoadData ( );
             DBLoadData.resourceData = new ProtoData.ResourceData ( );
             DBLoadData.resourceData.gold = peer.userAgent.UserAssetData.Gold;
@@ -224,25 +229,36 @@ namespace TheLordServer.Handler
 
         void OnLobbyEnterRecevied ( ClientPeer peer, OperationRequest operationRequest, SendParameters sendParameters )
         {
-            // [Tooltip] 검증과정
-            var workDBLoad = DBLoad ( peer ).GetAwaiter ( );
-            workDBLoad.OnCompleted ( ( ) =>
-            {
-                var DBLoadData = workDBLoad.GetResult ( );
-                OperationResponse response = new OperationResponse ( operationRequest.OperationCode );
+            OperationResponse response = new OperationResponse ( operationRequest.OperationCode );
 
-                if (DBLoadData == null)
-                {
-                    response.ReturnCode = (short)ReturnCode.Failed;
-                }
-                else
-                {
-                    response.ReturnCode = (short)ReturnCode.Success;
-                    response.Parameters = DBLoadData;
-                }
-                
+            // [Tooltip] 검증과정
+            if ( peer.userAgent.isLoad == true)
+            {
+                // 이미 이전에 로드가 되어있음
+                var packet = GetUserDB ( peer );
+                response.ReturnCode = (short)ReturnCode.Success;
+                response.Parameters = packet;
                 peer.SendOperationResponse ( response, sendParameters );
-            } );
+            }
+            else
+            {
+                var workDBLoad = DBLoad ( peer ).GetAwaiter ( );
+                workDBLoad.OnCompleted ( ( ) =>
+                {
+                    var DBLoadData = workDBLoad.GetResult ( );
+                    if ( DBLoadData == null )
+                    {
+                        response.ReturnCode = (short)ReturnCode.Failed;
+                    }
+                    else
+                    {
+                        response.ReturnCode = (short)ReturnCode.Success;
+                        response.Parameters = DBLoadData;
+                    }
+
+                    peer.SendOperationResponse ( response, sendParameters );
+                } );
+            }
         }
     }
 }

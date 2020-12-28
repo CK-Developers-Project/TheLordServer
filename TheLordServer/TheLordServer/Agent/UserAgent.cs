@@ -18,7 +18,7 @@ namespace TheLordServer.Agent
 
         public ObjectId Id { get => UserData.Id; }
 
-        bool isLoad = false;
+        public bool isLoad = false;
 
         public async Task Load()
         {
@@ -30,6 +30,12 @@ namespace TheLordServer.Agent
             isLoad = true;
             UserAssetData = await MongoHelper.UserAssetCollection.Get ( Id );
             BuildingDataList = await MongoHelper.BuildingCollection.GetAll ( Id );
+
+            var rankingData = await MongoHelper.RaidRankingCollection.Get ( Id );
+            if( rankingData  != null)
+            {
+                UserAssetData.Tier = rankingData.Tier;
+            }
         }
 
 
@@ -51,13 +57,6 @@ namespace TheLordServer.Agent
                     }
                     await Task.WhenAll ( workBuildingDataList );
                 }
-
-                List<Task> workBossDataList = new List<Task> ( );
-                foreach (var boss in TheLordServer.Instance.bossDataList )
-                {
-                    workBossDataList.Add ( MongoHelper.BossCollection.Update ( boss ) );
-                }
-                await Task.WhenAll ( workBossDataList );
 
                 TheLordServer.Log.InfoFormat ( "{0}의 정보를 동기화 하였습니다.", UserData.Info.Nickname );
             }

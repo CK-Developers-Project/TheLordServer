@@ -9,6 +9,7 @@ namespace TheLordServer.Handler
     using MongoDB.Model;
     using Table.Structure;
     using Util;
+    using Event;
 
     public class ContentHandler : Singleton<ContentHandler>, IBaseHandler
     {
@@ -37,6 +38,12 @@ namespace TheLordServer.Handler
             var bossData = TheLordServer.Instance.bossDataList[0];
 
             response.ReturnCode = bossData.HP > 0 ? (short)ReturnCode.Success : (short)ReturnCode.Failed;
+
+            if(response.ReturnCode == (short)ReturnCode.Failed)
+            {
+                BossEvent.OnUpdateRaidBoss ( peer, 16 );
+            }
+
             peer.SendOperationResponse ( response, sendParameters );
         }
 

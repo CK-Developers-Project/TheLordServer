@@ -52,7 +52,7 @@ namespace TheLordServer.Event
             }
 
             var current = GameUtility.Now ( ) - TheLordServer.Instance.bossDataList[0].CreateTime;
-            var total = new TimeSpan ( 24, 0, 0 ) - current;
+            var total = GameThread.ThreadRaidBoss.bossRemainTime - current;
             packet.tick = total.Ticks;
 
             EventData eventData = new EventData ( (byte)EventCode.UpdateRaidRanking );
