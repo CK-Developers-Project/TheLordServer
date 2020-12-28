@@ -50,7 +50,7 @@ namespace TheLordServer.Handler
             return data;
         }
 
-        async Task<Dictionary<byte, object>> DBLoad ( ClientPeer peer )
+        async Task DBLoad ( ClientPeer peer )
         {
             await peer.userAgent.Load ( );
 
@@ -79,7 +79,7 @@ namespace TheLordServer.Handler
                 default:
                     // TODO 에러보냄
                     TheLordServer.Log.ErrorFormat ( "[{0}]의 종족값이 이상합니다.", peer.Id );
-                    return null;
+                    return;
             }
 
             bool bExistMainBuilding = peer.userAgent.BuildingDataList.Exists ( x => x.Index == buildingIndex );
@@ -90,8 +90,6 @@ namespace TheLordServer.Handler
                 buildingData.LV = 1;
                 peer.userAgent.BuildingDataList.Add ( buildingData );
             }
-
-            return GetUserDB(peer);
         }
 
         Dictionary<byte, object> GetUserDB( ClientPeer peer )
@@ -112,6 +110,7 @@ namespace TheLordServer.Handler
                 bd.amount = data.CharactertData.Amount;
                 DBLoadData.buildingDataList.Add ( bd );
             }
+
             return BinSerializer.ConvertPacket ( DBLoadData );
         }
         #endregion
@@ -234,7 +233,7 @@ namespace TheLordServer.Handler
             // [Tooltip] 검증과정
             if ( peer.userAgent.isLoad == true)
             {
-                // 이미 이전에 로드가 되어있음
+                TheLordServer.Log.InfoFormat ( "{0}의 유저가 로비로 돌아왔습니다.", peer.userAgent.UserData.Info.Nickname );
                 var packet = GetUserDB ( peer );
                 response.ReturnCode = (short)ReturnCode.Success;
                 response.Parameters = packet;
@@ -242,19 +241,12 @@ namespace TheLordServer.Handler
             }
             else
             {
+                TheLordServer.Log.InfoFormat ( "{0}의 유저가 찾아왔습니다.", peer.userAgent.UserData.Info.Nickname );
                 var workDBLoad = DBLoad ( peer ).GetAwaiter ( );
                 workDBLoad.OnCompleted ( ( ) =>
                 {
-                    var DBLoadData = workDBLoad.GetResult ( );
-                    if ( DBLoadData == null )
-                    {
-                        response.ReturnCode = (short)ReturnCode.Failed;
-                    }
-                    else
-                    {
-                        response.ReturnCode = (short)ReturnCode.Success;
-                        response.Parameters = DBLoadData;
-                    }
+                    response.ReturnCode = (short)ReturnCode.Success;
+                    response.Parameters = GetUserDB ( peer );
 
                     peer.SendOperationResponse ( response, sendParameters );
                 } );
