@@ -6,7 +6,7 @@ namespace TheLordServer.MongoDB.CollectionData
     public class BossData : BaseData
     {
         public int Index { get; set; }
-        public float HP { get; set; }
+        public int HP { get; set; }
         public DateTime CreateTime { get; set; }
 
         public BossData ( ) : base ( )

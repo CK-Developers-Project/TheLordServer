@@ -45,7 +45,7 @@ namespace TheLordServer.GameThread
             {
                 var sheet = TheLordTable.Instance.CharacterTable.CharacterInfoSheet;
                 var record = BaseTable.Get ( sheet, "index", RaidBossIndex );
-                bossData.HP = (float)record["hp"];
+                bossData.HP = (int)(float)record["hp"];
                 bossData.CreateTime += new TimeSpan ( 24, 0, 0 );
             }
         }

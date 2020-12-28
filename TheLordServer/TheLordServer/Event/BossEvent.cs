@@ -13,7 +13,7 @@ namespace TheLordServer.Event
         {
             EventData eventData = new EventData ( (byte)EventCode.UpdateRaidBoss );
 
-            var bossData = TheLordServer.Instance.bossDataList.Find ( x => x.Index == index );
+            var bossData = TheLordServer.Instance.bossDataList[0];
             if(bossData == null)
             {
                 TheLordServer.Log.Info ( "보스가 없습니다." );
