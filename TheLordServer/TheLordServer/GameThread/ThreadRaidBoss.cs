@@ -21,7 +21,7 @@ namespace TheLordServer.GameThread
         TimeSpan updateTick = new TimeSpan ( 0, UpdateMin, 0 );
         DateTime updateBoss;
 
-        public static TimeSpan bossRemainTime = new TimeSpan ( 6, 0, 0 );
+        public static TimeSpan bossRemainTime = new TimeSpan ( 4, 0, 0 );
 
         public void Start()
         {

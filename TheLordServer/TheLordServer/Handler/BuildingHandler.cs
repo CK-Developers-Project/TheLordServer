@@ -48,6 +48,12 @@ namespace TheLordServer.Handler
         void OnBuildingClickReceived(ClientPeer peer, OperationRequest operationRequest, SendParameters sendParameters)
         {
             var buildingClickData = BinSerializer.ConvertData<ProtoData.BuildingClickData> ( operationRequest.Parameters );
+
+            if( peer.userAgent == null )
+            {
+                Failed ( peer, sendParameters );
+            }
+
             switch ( (ClickAction)buildingClickData.clickAction )
             {
                 case ClickAction.MainBuildingTakeGold:
@@ -100,6 +106,12 @@ namespace TheLordServer.Handler
         private void ClickAction_BuildingBuild ( ClientPeer peer, ProtoData.BuildingClickData buildingClickData, byte operationCode, SendParameters sendParameters )
         {
             int index = buildingClickData.index;
+
+            if ( peer.userAgent.BuildingDataList == null )
+            {
+                Failed ( peer, sendParameters );
+                return;
+            }
 
             var buildingData = peer.userAgent.BuildingDataList.Find ( x => x.Index == index );
             var response = new OperationResponse(operationCode);
@@ -163,6 +175,12 @@ namespace TheLordServer.Handler
         private void ClickAction_BuildingLevelUp ( ClientPeer peer, ProtoData.BuildingClickData buildingClickData, byte operationCode, SendParameters sendParameters )
         {
             int index = buildingClickData.index;
+
+            if( peer.userAgent.BuildingDataList  == null)
+            {
+                Failed ( peer, sendParameters );
+                return;
+            }
 
             var buildingData = peer.userAgent.BuildingDataList.Find(x => x.Index == index);
             var response = new OperationResponse(operationCode);
@@ -254,6 +272,12 @@ namespace TheLordServer.Handler
         {
             int index = buildingClickData.index;
 
+            if ( peer.userAgent.BuildingDataList == null )
+            {
+                Failed ( peer, sendParameters );
+                return;
+            }
+
             var buildingData = peer.userAgent.BuildingDataList.Find(x => x.Index == index);
             var response = new OperationResponse(operationCode);
 
@@ -304,6 +328,12 @@ namespace TheLordServer.Handler
         void OnBuildingConfirmReceived ( ClientPeer peer, OperationRequest operationRequest, SendParameters sendParameters )
         {
             var buildingConfirmData = BinSerializer.ConvertData<ProtoData.BuildingConfirmData> ( operationRequest.Parameters );
+
+            if ( peer.userAgent == null )
+            {
+                Failed ( peer, sendParameters );
+            }
+
             switch ( (ConfirmAction)buildingConfirmData.confirmAction )
             {
                 case ConfirmAction.Build:
@@ -321,6 +351,13 @@ namespace TheLordServer.Handler
         private void ConfirmAction_Build(ClientPeer peer, OperationRequest operationRequest, SendParameters sendParameters, ProtoData.BuildingConfirmData buildingConfirmData)
         {
             int index = buildingConfirmData.index;
+
+            if ( peer.userAgent.BuildingDataList == null )
+            {
+                Failed ( peer, sendParameters );
+                return;
+            }
+
             var buildingData = peer.userAgent.BuildingDataList.Find(x => x.Index == index);
             OperationResponse response = new OperationResponse(operationRequest.OperationCode);
 
@@ -361,6 +398,13 @@ namespace TheLordServer.Handler
         private void ConfirmAction_LevelUp (ClientPeer peer, OperationRequest operationRequest, SendParameters sendParameters, ProtoData.BuildingConfirmData buildingConfirmData)
         {
             int index = buildingConfirmData.index;
+
+            if ( peer.userAgent.BuildingDataList == null )
+            {
+                Failed ( peer, sendParameters );
+                return;
+            }
+
             var buildingData = peer.userAgent.BuildingDataList.Find(x => x.Index == index);
             OperationResponse response = new OperationResponse(operationRequest.OperationCode);
 
